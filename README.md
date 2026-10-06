@@ -9,6 +9,17 @@ Explorador de datos de la materia **Data Science 101: Intro y Aplicaciones** (MB
 - Trae tres datasets de clase con preguntas guiadas: Wine Quality (vinho verde, UCI) y EcoBici 2025 (datos abiertos del GCBA: viajes, serie diaria con clima, usuarios).
 - Permite cargar cualquier archivo CSV propio. Detecta separador, formato de números (1234.5 o 1.234,5), fechas y tipos de variable, y arma preguntas y hallazgos automáticos.
 - Gráficos: tabla y estadística descriptiva, histograma, dispersión con recta de regresión, box plot, barras con agregación, línea (series de tiempo), mapa de calor, matriz de correlación y mapa (si hay latitud y longitud).
+- **Clasificador**: entrena un modelo que predice una variable categórica (por ejemplo, la calidad del vino, «Bueno» o «Malo») a partir de las demás. Tiene cuatro pasos:
+  1. **Exploración**: balance de clases, línea de base, faltantes, duplicados y la asociación de cada variable con la clase.
+  2. **Variables y validación**: elección de variables, quitar duplicados, división estratificada en entrenamiento y prueba con semilla reproducible.
+  3. **Modelo y métricas**: regresión logística, árbol de decisión o k vecinos; matriz de confusión, exactitud, precisión, sensibilidad, F1 y AUC; umbral de decisión ajustable; pesos, reglas del árbol e importancia de variables; tabla comparativa de modelos exportable (CSV y PNG).
+  4. **Predecir un caso nuevo**: probabilidad, clase y explicación de cómo llegó el modelo a esa respuesta.
+
+  Los modelos están escritos a mano en el mismo archivo, sin librerías. Funciona con los datasets de clase y con cualquier CSV que tenga una columna de 2 a 12 categorías.
+
+## Ejercicios
+
+- [Ejercicio 3 · Clasificador de vinos con IA, auditado](ejercicios/ejercicio-3-clasificador.md)
 
 ## Privacidad
 
@@ -17,7 +28,7 @@ Todo corre en el navegador. Los archivos que se cargan **no se envían a ningún
 ## Guardar el trabajo
 
 - **Descargar gráfico:** guarda el gráfico actual como imagen PNG. En la vista Tabla, descarga la tabla como CSV.
-- **Guardar análisis:** guarda los datos y la vista actual en un archivo `.datalab.json` en su computadora.
+- **Guardar análisis:** guarda los datos, la vista actual y el clasificador (configuración y modelos de la comparación) en un archivo `.datalab.json` en su computadora.
 - **Abrir análisis:** vuelve a abrir ese archivo y recupera datos y vista, sin volver a cargar el CSV.
 
 ## Usarlo sin conexión

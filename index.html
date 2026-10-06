@@ -314,6 +314,101 @@ body{overflow:hidden}
 #imp-name{font-size:17px;padding:8px 12px;min-width:min(420px,100%)}
 .imp-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 </style>
+<style>
+/* ---------- clasificador ---------- */
+#btn-clf{color:var(--gold);border-color:var(--gold);font-weight:600;font-size:13.5px;padding:6px 12px}
+#btn-clf[aria-pressed="true"]{background:var(--gold);color:#0b0b12}
+.clf{position:absolute;inset:0;z-index:14;background:var(--ground);overflow-y:auto;padding-block:22px 40px;padding-inline:clamp(16px,4vw,56px)}
+.clf-in{max-width:1180px;margin-inline:auto;display:flex;flex-direction:column;gap:18px}
+.clf h2{font-size:clamp(30px,3.6vw,54px)}
+.clf .lede{font-size:clamp(16px,1.4vw,20px);margin:0}
+.cstep{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:clamp(16px,2vw,26px);display:flex;flex-direction:column;gap:14px;min-width:0}
+.cstep>h3{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0;font-family:var(--display);font-stretch:115%;font-weight:900;font-size:clamp(22px,2.2vw,30px);line-height:1.1}
+.cstep>h3 .n{font-family:var(--mono);font-size:12px;color:var(--gold);font-weight:500;letter-spacing:.12em}
+.cstep .sub{margin:0;color:var(--ink-2);font-size:14.5px;max-width:95ch}
+.cstep .sub b{color:var(--ink)}
+.cstep h4.ch{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 8px;font-weight:500}
+.verify{margin:0;border-left:3px solid var(--gold);padding:9px 14px;background:var(--surface-2);border-radius:0 6px 6px 0;font-size:14px;color:var(--ink-2)}
+.verify b{color:var(--gold);font-weight:600}
+.verify.warn{border-left-color:var(--hot)}
+.verify.warn b{color:var(--hot)}
+.crow{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.clab,.crow>label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.clf select,.clf input[type=number],.clf input[type=text]{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit;font-size:14px;text-transform:none;letter-spacing:0;max-width:260px}
+.clf select:focus-visible,.clf input:focus-visible{outline:2px solid var(--accent)}
+.clf .seg button{font-family:var(--body);font-size:13.5px;padding:7px 12px}
+.clf .crow>label input[type=range]{min-width:140px;max-width:220px}
+.clf output{font-family:var(--mono);font-size:13px;color:var(--ink);text-transform:none;letter-spacing:0;min-width:5ch}
+.cchk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}
+.cchk input{accent-color:var(--accent);width:16px;height:16px}
+.cchk small{color:var(--muted);font-family:var(--mono);font-size:12px}
+.ctab{overflow-x:auto}
+.ctab table{margin-top:0}
+.ctab th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);font-weight:500;white-space:nowrap}
+.ctab td{font-size:13.5px}
+.sbar{display:flex;align-items:center;gap:8px;min-width:170px}
+.sbar span.trk{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;min-width:60px}
+.sbar span.trk i{display:block;height:100%;border-radius:4px}
+.sbar code{font-family:var(--mono);font-size:12px;color:var(--ink-2);white-space:nowrap;min-width:7ch;text-align:right}
+.fchk{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
+.fchk>label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:7px 10px;background:var(--surface-2);font-size:14px;cursor:pointer;min-width:0}
+.fchk>label:has(input:checked){border-color:var(--accent)}
+.fchk>label input{accent-color:var(--accent);flex:none}
+.fchk>label span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fchk>label small{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted);flex:none}
+.cres{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:900px){.cres{grid-template-columns:1fr}}
+.cm{display:grid;grid-template-columns:minmax(64px,auto) 1fr 1fr;gap:5px}
+.cm .h{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;overflow-wrap:anywhere}
+.cm .cell{border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-height:104px;justify-content:center;min-width:0}
+.cm .cell .v{font-family:var(--display);font-stretch:112%;font-weight:900;font-size:clamp(28px,3vw,44px);line-height:1;font-variant-numeric:tabular-nums}
+.cm .cell .t{font-size:12.5px;color:var(--ink-2);line-height:1.35}
+.cm .cell .t b{color:var(--ink);font-weight:600}
+.cm .ok{background:color-mix(in srgb,var(--accent) 14%,var(--surface-2));border:1px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.cm .bad{background:color-mix(in srgb,var(--hot) 13%,var(--surface-2));border:1px solid color-mix(in srgb,var(--hot) 45%,transparent)}
+.cmcap{font-size:13px;color:var(--muted);margin:8px 0 0}
+.mtiles{margin-top:0;display:flex;flex-wrap:wrap}
+.mtiles .tile{flex:1 1 150px}
+@media (max-width:540px){.cm{grid-template-columns:44px 1fr 1fr}.cm .cell{padding:10px;min-height:88px}.cm .cell .v{font-size:26px}.cm .h{font-size:10px;letter-spacing:0}}
+.mtiles .tile .v{font-size:clamp(24px,2.4vw,36px)}
+.mtiles .tile .l{font-size:14px;color:var(--ink)}
+.mtiles .tile .d{font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px}
+.cthr{background:var(--surface-2);border-radius:10px;padding:10px 12px 4px}
+.cthr svg{touch-action:none}
+.cthr .hit{cursor:ew-resize}
+.coefs{display:grid;grid-template-columns:minmax(110px,max-content) minmax(120px,1fr) auto;gap:5px 12px;align-items:center;font-size:13.5px}
+.coefs .trk{position:relative;height:14px;background:var(--surface-2);border-radius:3px}
+.coefs .trk::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.coefs .trk.one::before{display:none}
+.coefs .trk i{position:absolute;top:2px;bottom:2px;border-radius:2px}
+.coefs .val{font-family:var(--mono);font-size:12px;text-align:right;color:var(--ink-2);white-space:nowrap}
+.ctree{font-size:13.5px;max-height:460px;overflow:auto;background:var(--surface-2);border-radius:8px;padding:10px 14px}
+.ctree ul{list-style:none;margin:0;padding-left:20px;border-left:1px dashed var(--line)}
+.ctree>ul{padding-left:0;border-left:0}
+.ctree li{margin:4px 0}
+.ctree .leaf,.cpath .leaf{display:inline-block;margin-left:6px;font-family:var(--mono);font-size:12px;padding:1px 7px;border-radius:4px;white-space:nowrap}
+.leaf.pos{background:color-mix(in srgb,var(--s1) 28%,transparent);color:var(--ink)}
+.leaf.neg{background:var(--surface);color:var(--ink-2);border:1px solid var(--line)}
+.ccmp tr[data-i]{cursor:pointer}
+.ccmp tr[data-i]:hover td{background:var(--surface-2)}
+.ccmp tr.cur td{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.ccmp td small{display:block;color:var(--muted);font-size:11.5px}
+.pin{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.pin>label{flex-direction:column;align-items:stretch;gap:4px;cursor:default}
+.pin>label span{font-size:12.5px;color:var(--ink-2);white-space:normal}
+.pin>label input,.pin>label select{max-width:none;width:100%}
+.pout{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.pout{grid-template-columns:1fr}}
+.pcard{background:var(--surface-2);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.pcard .l{font-size:13px;color:var(--ink-2)}
+.pmeter{height:10px;border-radius:5px;background:var(--line);position:relative;margin:6px 0}
+.pmeter i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--s1)}
+.pmeter b{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--gold)}
+.dec{align-self:flex-start;padding:4px 12px;border-radius:999px;font-weight:600;font-size:15px}
+.dec.pos{background:var(--s1);color:#fff}
+.dec.neg{background:var(--s-other);color:#fff}
+.cpath{margin:0;padding-left:18px;font-size:13.5px;display:grid;gap:4px}
+</style>
 
 <header class="top">
   <span class="logo"><img src="data:image/png;base64,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" alt="UCEMA"></span>
@@ -341,6 +436,84 @@ body{overflow:hidden}
       </div>
     </div>
   </div>
+  <div class="clf" id="clf" hidden>
+    <div class="clf-in">
+      <div class="imp-row" style="justify-content:space-between"><p class="kicker" style="margin:0">Clasificador · UCEMA Data Science 101</p><span class="savebtns"><button class="btn" id="clf-save" type="button" title="Guarda los datos, el clasificador y la comparación de modelos en un archivo .datalab.json">Guardar análisis</button><button class="btn" id="clf-close" type="button">Volver al lab</button></span></div>
+      <h2>Entrene un modelo que clasifique.</h2>
+      <p class="lede">Elija qué predecir y con qué variables, entrene hasta tres tipos de modelo, compare sus matrices de confusión y pruebe el modelo con un caso nuevo. Todo se calcula en este navegador: úselo para verificar lo que le diga su IA.</p>
+      <p class="src" id="clf-ds" style="margin:0"></p>
+      <div class="finding" id="clf-q" hidden></div>
+      <div class="imp-err" id="clf-none" hidden>Este dataset no tiene una variable categórica de 2 a 12 categorías para predecir. Use el dataset <b>Vinos</b> o cargue un CSV con una columna de clase (por ejemplo, sí / no).</div>
+      <div id="clf-body" style="display:flex;flex-direction:column;gap:18px">
+
+        <section class="cstep" aria-labelledby="cs1">
+          <h3 id="cs1"><span class="n">PASO 1</span>Exploración</h3>
+          <p class="sub">Antes de entrenar: cuántos casos hay de cada clase, qué datos faltan o se repiten y qué variables separan a las clases.</p>
+          <div class="crow">
+            <label>Variable a predecir <select id="c-target"></select></label>
+            <label>Clase positiva <select id="c-pos"></select></label>
+          </div>
+          <p class="sub">El modelo estima, para cada fila, la probabilidad de pertenecer a la <b>clase positiva</b>. «Positiva» no significa «buena»: es la clase que se quiere detectar.</p>
+          <div class="tiles" id="c-tiles" style="margin-top:0"></div>
+          <div class="ctab" id="c-ftab"></div>
+          <p class="verify" id="c-verify1"></p>
+          <div class="crow"><button class="btn" id="c-dl" type="button">Descargar el dataset completo (CSV) para su IA</button><span class="src" style="margin:0">Separador coma, decimales con punto: el formato que leen ChatGPT, Claude o Gemini.</span></div>
+        </section>
+
+        <section class="cstep" aria-labelledby="cs2">
+          <h3 id="cs2"><span class="n">PASO 2</span>Variables y validación</h3>
+          <p class="sub">Elija con qué variables aprende el modelo. Los datos se dividen al azar en <b>entrenamiento</b> (el modelo aprende) y <b>prueba</b> (se mide con casos que el modelo no vio).</p>
+          <div class="crow"><span class="clab">Selección rápida</span>
+            <div class="seg" id="c-presets" role="group" aria-label="Selección rápida de variables"><button type="button" data-p="all">Todas</button><button type="button" data-p="top4">Las 4 más asociadas</button><button type="button" data-p="none">Ninguna</button></div>
+          </div>
+          <div class="fchk" id="c-feats"></div>
+          <div class="crow">
+            <label class="cchk" style="text-transform:none;letter-spacing:0;font-family:var(--body)"><input type="checkbox" id="c-dedupe"> Quitar filas duplicadas <small id="c-dupn"></small></label>
+            <label>Prueba <input type="range" id="c-test" min="20" max="40" step="5"> <output id="c-testv"></output></label>
+            <label>Semilla <input type="number" id="c-seed" min="1" max="99999" step="1" style="width:96px"></label>
+            <button class="btn" id="c-reseed" type="button">Otra semilla</button>
+          </div>
+          <p class="sub" id="c-split"></p>
+          <p class="verify warn" id="c-dupwarn" hidden></p>
+        </section>
+
+        <section class="cstep" aria-labelledby="cs3">
+          <h3 id="cs3"><span class="n">PASO 3</span>Modelo y métricas</h3>
+          <div class="crow">
+            <div class="seg" id="c-models" role="group" aria-label="Tipo de modelo"></div>
+            <span class="crow" id="c-params"></span>
+          </div>
+          <p class="sub" id="c-mdesc"></p>
+          <div class="crow"><button class="btn primary" id="c-train" type="button">Entrenar modelo →</button><span class="src" id="c-status" style="margin:0" role="status"></span></div>
+          <div id="c-res" hidden style="display:flex;flex-direction:column;gap:18px">
+            <div class="cres">
+              <div><h4 class="ch" id="c-cmt">Matriz de confusión</h4><div class="cm" id="c-cm"></div><p class="cmcap" id="c-cmcap"></p></div>
+              <div><h4 class="ch">Métricas en prueba</h4><div class="tiles mtiles" id="c-mets"></div><p class="sub" id="c-base" style="margin-top:10px"></p></div>
+            </div>
+            <div>
+              <div class="crow"><label for="c-cut">Umbral de decisión <input type="range" id="c-cut" min="0.05" max="0.95" step="0.01"> <output id="c-cutv"></output></label></div>
+              <p class="sub" id="c-cutnote" style="margin-top:6px"></p>
+            </div>
+            <div class="cthr"><div class="legend-inline" id="c-thrleg"></div><svg id="c-thr" role="img" aria-label="Métricas según el umbral"></svg></div>
+            <div><h4 class="ch">Qué aprendió el modelo</h4><div id="c-explain"></div></div>
+            <div>
+              <div class="crow" style="justify-content:space-between;margin-bottom:8px"><h4 class="ch" style="margin:0">Comparación de modelos · clic en una fila para verla</h4>
+                <span class="savebtns"><button class="btn" id="c-csv" type="button">Descargar tabla (CSV)</button><button class="btn" id="c-png" type="button">Descargar resultado (PNG)</button><button class="btn" id="c-clear" type="button">Borrar comparación</button></span></div>
+              <div class="ctab ccmp" id="c-cmp"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="cstep" aria-labelledby="cs4">
+          <h3 id="cs4"><span class="n">PASO 4</span>Predecir un caso nuevo</h3>
+          <p class="sub" id="c-psub"></p>
+          <div class="crow" id="c-pbtns"></div>
+          <div class="fchk pin" id="c-inp"></div>
+          <div id="c-pout"></div>
+        </section>
+      </div>
+    </div>
+  </div>
   <aside class="qs">
     <p class="kicker">Preguntas guiadas</p>
     <h2 id="ds-title">Vinos</h2>
@@ -350,6 +523,7 @@ body{overflow:hidden}
   <section class="main">
     <div class="bar">
       <div class="seg charts" id="charts" role="group" aria-label="Tipo de gráfico"></div>
+      <button class="btn" id="btn-clf" type="button" aria-pressed="false" title="Entrenar un modelo que clasifique: matriz de confusión, comparación de modelos y predicción de casos nuevos">Clasificador ◆</button>
       <span class="savebtns"><button class="btn" id="btn-png" type="button" title="Guarda el gráfico actual como imagen PNG (en Tabla, descarga la tabla como CSV)">Descargar gráfico</button><button class="btn" id="btn-save" type="button" title="Guarda los datos y la vista actual en un archivo .datalab.json en su computadora">Guardar análisis</button><button class="btn" id="btn-open" type="button" title="Abre un archivo .datalab.json guardado antes">Abrir análisis</button></span>
     </div>
     <div class="bar" id="ctrls">
@@ -442,7 +616,7 @@ function loadDS(k){dsKey=k;const raw=DATASETS[k];
   $("#dsinfo").textContent=nf(D.n)+" filas · "+D.cols.length+" variables";
   const ql=$("#qlist");ql.innerHTML="";
   D.qs.forEach((q,i)=>{const b=document.createElement("button");b.type="button";b.className="q";b.innerHTML=`<b><span class="n">${i+1}</span>${esc(q.t)}</b><span>${esc(q.s||"")}</span>`;b.onclick=()=>applyQ(i);ql.appendChild(b);});
-  fillSelects();applyQ(0);}
+  fillSelects();applyQ(0);clfOnDS();}
 
 /* ---------- controls ---------- */
 const chartsBox=$("#charts");
@@ -473,7 +647,9 @@ $("#sx").onchange=e=>{S.x=e.target.value;S.q=-1;render();};
 $("#sy").onchange=e=>{S.y=e.target.value;S.q=-1;render();};
 $("#sg").onchange=e=>{S.g=e.target.value;S.q=-1;render();};
 $("#sa").onchange=e=>{S.agg=e.target.value;S.q=-1;render();};
-function applyQ(i){const q=D.qs[i];if(!q)return;S.q=i;Object.assign(S,{chart:q.c,x:q.x||S.x,y:q.y||S.y,g:q.g||"",agg:q.a||S.agg});
+function applyQ(i){const q=D.qs[i];if(!q)return;
+  if(q.c==="clf"){S.q=i;$$(".q").forEach((b,k)=>b.setAttribute("aria-pressed",String(k===i)));fixSel();render();clfShow(q.clf||{},q);return;}
+  S.q=i;Object.assign(S,{chart:q.c,x:q.x||S.x,y:q.y||S.y,g:q.g||"",agg:q.a||S.agg});
   $$(".q").forEach((b,k)=>b.setAttribute("aria-pressed",String(k===i)));fixSel();render();}
 
 /* ---------- canvas / svg setup ---------- */
@@ -650,7 +826,7 @@ const imp=$("#imp"),fileIn=$("#file"),drop=$("#drop");
 let IMP=null; // {name,header,rows,total,delim,enc,file,types}
 
 function addTab(k){const b=document.createElement("button");b.type="button";b.textContent=DATASETS[k].name;b.dataset.k=k;b.onclick=()=>{imp.hidden=true;loadDS(k);};tabs.insertBefore(b,$("#tab-imp"));}
-function openImport(){imp.hidden=false;$$("button",tabs).forEach(b=>b.setAttribute("aria-pressed",String(b.id==="tab-imp")));}
+function openImport(){imp.hidden=false;clfHide();$$("button",tabs).forEach(b=>b.setAttribute("aria-pressed",String(b.id==="tab-imp")));}
 $("#tab-imp").onclick=openImport;$("#imp-close").onclick=()=>{imp.hidden=true;if(dsKey)loadDS(dsKey);};
 
 drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("over");});
@@ -811,6 +987,11 @@ function autoQs(o,hasDate){const qs=[],nums=o.num,cats=o.cat.filter(c=>c.levels.
   if(hr&&dw)qs.push({t:"La semana en un mapa de calor",s:"Hora × día de la semana",c:"heat",x:hr.k,y:dw.k,a:"count",f:"Cada celda cuenta los registros de una hora de un día de la semana: <b>168 celdas</b> resumen todo el dataset. Busque patrones repetidos y excepciones.",ta:"«¿Qué patrón temporal ves y qué decisión operativa sugiere?»"});
   else if(ms)qs.push({t:"Estacionalidad",s:"Registros por mes",c:"bars",x:ms.k,y:(nums[0]||{}).k,a:"count",f:"Conteo de registros por mes. Si el período cubre menos de un año completo, las diferencias entre meses pueden reflejar el recorte y no una estacionalidad real.",ta:"«¿Cómo distinguirías estacionalidad de tendencia en estos datos?»"});
   if(o.map){const i=o.map.w.indexOf(Math.max(...o.map.w));qs.push({t:"¿Dónde?",s:"Mapa de ubicaciones",c:"map",f:`<b>${nf(o.map.w.length)}</b> ubicaciones. La de más registros está en ${esc(o.map.name[i])}. Sin mapa de fondo, las coordenadas dibujan por sí solas la forma del territorio.`,ta:"«¿Qué tienen en común las ubicaciones con más registros?»"});}
+  const bt=o.cat.find(k=>k.levels.length===2&&!/ · /.test(k.k));
+  if(bt&&(nums.length||o.cat.length>1)){const cnt=[0,0];bt.v.forEach(v=>cnt[v]++);const mj=cnt[0]>=cnt[1]?0:1;
+    qs.push({t:"¿Se puede predecir "+esc(bt.k)+"?",s:"Clasificador · modelo y matriz de confusión",c:"clf",clf:{target:bt.k,pos:posGuess(bt.levels)},
+      f:`Un modelo que diga siempre «${esc(bt.levels[mj])}» acierta el <b>${nf(cnt[mj]/bt.v.length*100,1)}%</b> de las veces sin aprender nada: ésa es la línea de base. Abra el Clasificador, elija las variables, entrene al menos dos modelos y compárelos con la matriz de confusión.`,
+      ta:"«¿Qué error del modelo sería más costoso en este caso, y por qué?»"});}
   return qs;}
 function dailyQs(o){const n=o.num[1].v,lab=o.num[0].lab,dd=o.num[0].v;const st=stats(n);const imax=n.indexOf(st.max),imin=n.indexOf(st.min);
   const wk=[0,1].map(t=>mean(n.filter((v,i)=>o.cat[1].v[i]===t)));
@@ -856,16 +1037,382 @@ async function downloadChart(){
   x.fillStyle=css("--muted");x.font="11px "+css("--mono");x.fillText("UCEMA · Data Science 101 · Data Lab · "+new Date().toLocaleDateString("es-AR"),16,H+head+foot-11);
   c.toBlob(b=>saveBlob(b,slug(D.name)+"-"+slug(viewLabel())+".png"),"image/png");}
 function saveAnalysis(){if(!D||!DATASETS[dsKey])return;
-  const obj={ds101lab:1,guardado:new Date().toISOString(),dataset:DATASETS[dsKey],vista:{chart:S.chart,x:S.x,y:S.y,g:S.g,agg:S.agg,q:S.q,z:S.z}};
+  const obj={ds101lab:1,guardado:new Date().toISOString(),dataset:DATASETS[dsKey],vista:{chart:S.chart,x:S.x,y:S.y,g:S.g,agg:S.agg,q:S.q,z:S.z},clasificador:clfState(),clasificadorAbierto:!clfBox.hidden};
   saveBlob(new Blob([JSON.stringify(obj)],{type:"application/json"}),slug(D.name)+".datalab.json");}
 async function openAnalysis(file){let obj;
   try{obj=JSON.parse(await file.text());}catch(e){openImport();impErr("El archivo no es un análisis válido del Data Lab.");return;}
   if(!obj||obj.ds101lab!==1||!obj.dataset||!Array.isArray(obj.dataset.num)||!Array.isArray(obj.dataset.cat)){openImport();impErr("El archivo no es un análisis guardado con el Data Lab (extensión .datalab.json).");return;}
   const k="guardado_"+Date.now();DATASETS[k]=obj.dataset;addTab(k);imp.hidden=true;loadDS(k);
-  if(obj.vista){Object.assign(S,obj.vista);if(!(S.q>=0&&D.qs[S.q]))S.q=-1;$$(".q").forEach((b,i)=>b.setAttribute("aria-pressed",String(i===S.q)));fixSel();render();}}
+  if(obj.vista){Object.assign(S,obj.vista);if(!(S.q>=0&&D.qs[S.q]))S.q=-1;$$(".q").forEach((b,i)=>b.setAttribute("aria-pressed",String(i===S.q)));fixSel();render();}
+  if(obj.clasificador)clfRestore(obj.clasificador,!!obj.clasificadorAbierto);}
 const openIn=document.createElement("input");openIn.type="file";openIn.accept=".json,application/json";openIn.hidden=true;document.body.appendChild(openIn);
 openIn.addEventListener("change",()=>{if(openIn.files[0])openAnalysis(openIn.files[0]);openIn.value="";});
 $("#btn-png").onclick=downloadChart;$("#btn-save").onclick=saveAnalysis;$("#btn-open").onclick=()=>openIn.click();
+
+/* ======================= CLASIFICADOR ======================= */
+/* Modelos escritos a mano, sin librerías: regresión logística (IRLS con penalización L2 suave),
+   árbol de decisión (CART, índice de Gini) y k vecinos más cercanos (distancia euclídea estandarizada). */
+const clfBox=$("#clf");
+const MODELS={logit:"Regresión logística",tree:"Árbol de decisión",knn:"k vecinos"};
+const MDESC={
+  logit:"<b>Regresión logística.</b> Suma ponderada de las variables, convertida en una probabilidad entre 0 y 1. Cada peso indica cuánto empuja una variable hacia la clase positiva.",
+  tree:"<b>Árbol de decisión.</b> Preguntas sucesivas del tipo «¿Alcohol &gt; 11?» que dividen los datos en grupos cada vez más puros. Se lee como un conjunto de reglas. Más profundidad = reglas más finas y más riesgo de memorizar.",
+  knn:"<b>k vecinos más cercanos.</b> Para cada caso busca en el entrenamiento los k casos más parecidos y calcula qué proporción es de la clase positiva. No resume nada: recuerda todo el entrenamiento."};
+const CLF_MAX=20000,KNN_REF=6000,KNN_TEST=3000,RUNS_MAX=10;
+let C=null;const PREP=new Map();
+const qq=s=>"«"+esc(s)+"»";
+const pc=(v,d=1)=>Number.isFinite(v)?nf(v*100,d)+"%":"—";
+function mulberry(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fmtT(v){const a=Math.abs(v);return nf(v,a>=100?1:a>=1?2:a>=.01?3:4);}
+function clfTargets(){return cols("cat").filter(c=>c.levels.length>=2&&c.levels.length<=12);}
+function clfCands(){return D.cols.filter(c=>c.k!==C.target&&(c.t==="num"||c.levels.length<=12));}
+function rowKey(i){let s="";for(const c of D.cols)s+=c.v[i]+"|";return s;}
+function posGuess(levels){if(levels.length!==2)return levels[0];const hit=levels.find(l=>/^(s[ií]|yes|y|true|verdadero|1|positivo|bueno|alto|fraude|churn|default|aprobado)(?=$|[\s(])/i.test(String(l).trim()));return hit!=null?hit:levels[1];}
+function negOf(target,pos){const t=col(target);return t&&t.levels.length===2?t.levels.find(l=>l!==pos):"no "+pos;}
+
+/* ---- estado ---- */
+function clfInit(){const T=clfTargets();
+  C={ds:dsKey,none:!T.length,runs:[],cur:-1,dedupe:true,test:30,seed:42,model:"logit",depth:4,leaf:20,k:15,cutoff:.5,inp:null,ex:null};
+  if(C.none)return;
+  const t=T.find(c=>c.levels.length===2&&/calidad|clase|target|label|resultado|churn|fraude|default|aprob/i.test(c.k))||T.find(c=>c.levels.length===2)||T[0];
+  setTarget(t.k);
+  const seen=new Set();let d=0;for(let i=0;i<D.n;i++){const k=rowKey(i);if(seen.has(k))d++;else seen.add(k);}C.dupN=d;}
+function setTarget(k,pos){const t=col(k);C.target=k;C.pos=pos!=null&&t.levels.includes(pos)?pos:posGuess(t.levels);C.ex=null;
+  C.feats=clfCands().filter(c=>c.t==="num"||c.levels.length<=6).map(c=>c.k);}
+function clfApply(p){if(!p)return;
+  if(p.target&&col(p.target)&&clfTargets().includes(col(p.target))&&(p.target!==C.target||(p.pos&&p.pos!==C.pos)))setTarget(p.target,p.pos);
+  else if(p.pos&&col(C.target).levels.includes(p.pos)){C.pos=p.pos;C.ex=null;}
+  if(p.model&&MODELS[p.model])C.model=p.model;}
+function curCfg(){const order=clfCands().map(c=>c.k);return{target:C.target,pos:C.pos,feats:order.filter(k=>C.feats.includes(k)),dedupe:C.dedupe,test:C.test,seed:C.seed,model:C.model,depth:C.depth,leaf:C.leaf,k:C.k,cutoff:C.cutoff};}
+
+/* ---- exploración ---- */
+function clfEx(){const key=C.target+"\u0001"+C.pos;if(C.ex&&C.ex.key===key)return C.ex;
+  const t=col(C.target),pi=t.levels.indexOf(C.pos),n=D.n,y=new Uint8Array(n);let np=0;for(let i=0;i<n;i++)if(t.v[i]===pi){y[i]=1;np++;}
+  let miss=0;
+  const rows=clfCands().map(c=>{
+    if(c.t==="num"){let sp=0,cp=0,sn=0,cn=0,ms=0;for(let i=0;i<n;i++){const v=c.v[i];if(!Number.isFinite(v)){ms++;continue;}if(y[i]){sp+=v;cp++;}else{sn+=v;cn++;}}
+      miss+=ms;let r=pearson(c.v,y);if(!Number.isFinite(r))r=0;return{c,num:true,mp:cp?sp/cp:NaN,mn:cn?sn/cn:NaN,r,s:Math.abs(r),miss:ms};}
+    const L=c.levels.length,a=new Array(L).fill(0),b=new Array(L).fill(0);for(let i=0;i<n;i++){if(y[i])a[c.v[i]]++;else b[c.v[i]]++;}
+    let chi=0;for(let l=0;l<L;l++){const tot=a[l]+b[l];if(!tot)continue;const ea=tot*np/n,eb=tot*(n-np)/n;if(ea)chi+=(a[l]-ea)**2/ea;if(eb)chi+=(b[l]-eb)**2/eb;}
+    const V=Math.sqrt(chi/n)||0;return{c,num:false,rate:c.levels.map((l,i)=>[l,a[i]+b[i]?a[i]/(a[i]+b[i]):NaN]),s:V,miss:0};});
+  rows.sort((p,q)=>q.s-p.s);
+  C.ex={key,n,np,miss,rows};return C.ex;}
+
+/* ---- preparación de datos: duplicados, división estratificada, codificación, estandarización ---- */
+function getPrep(cfg){const key=dsKey+"\u0003"+[cfg.target,cfg.pos,cfg.feats.join("\u0001"),cfg.dedupe,cfg.test,cfg.seed].join("\u0002");
+  if(PREP.has(key))return PREP.get(key);
+  const t=col(cfg.target),pi=t.levels.indexOf(cfg.pos),feats=cfg.feats.map(col).filter(Boolean);
+  if(!t||pi<0)throw new Error("la variable a predecir no existe en este dataset.");
+  if(!feats.length)throw new Error("elija al menos una variable.");
+  let rows=[],dups=0;const seen=new Set();
+  for(let i=0;i<D.n;i++){if(cfg.dedupe){const k=rowKey(i);if(seen.has(k)){dups++;continue;}seen.add(k);}rows.push(i);}
+  let sampled=0;if(rows.length>CLF_MAX){sampled=rows.length;rows=shuffle(rows,mulberry(cfg.seed+7)).slice(0,CLF_MAX).sort((a,b)=>a-b);}
+  const m=rows.length,y=new Uint8Array(m),G=t.levels.map(()=>[]);
+  rows.forEach((i,li)=>{if(t.v[i]===pi)y[li]=1;G[t.v[i]].push(li);});
+  const np=y.reduce((a,b)=>a+b,0);if(!np||np===m)throw new Error("hace falta al menos un caso de cada clase.");
+  /* división estratificada por categoría de la variable a predecir: no depende de cuál se elija como positiva */
+  const r=mulberry(cfg.seed);let te=[],tr=[];
+  G.forEach(g=>{if(!g.length)return;shuffle(g,r);const k=Math.min(g.length-1,Math.max(1,Math.round(g.length*cfg.test/100)));te=te.concat(g.slice(0,k));tr=tr.concat(g.slice(k));});
+  te.sort((a,b)=>a-b);tr.sort((a,b)=>a-b);
+  if(!tr.length)throw new Error("no quedan casos para entrenar.");
+  const dc=[];feats.forEach(c=>{if(c.t==="num")dc.push({name:c.k,src:c,kind:"num"});else c.levels.forEach((l,li)=>{if(li>0)dc.push({name:c.k+" = "+l,src:c,kind:"dum",li,lv:l,ref:c.levels[0]});});});
+  const p=dc.length,X=new Float64Array(m*p),med=new Float64Array(p);let imputed=0;
+  dc.forEach((d,j)=>{if(d.kind==="num"){const tv=fin(tr.map(li=>d.src.v[rows[li]])).sort((a,b)=>a-b);med[j]=tv.length?quant(tv,.5):0;}
+    for(let li=0;li<m;li++){const i=rows[li];let v;if(d.kind==="num"){v=d.src.v[i];if(!Number.isFinite(v)){v=med[j];imputed++;}}else v=d.src.v[i]===d.li?1:0;X[li*p+j]=v;}});
+  const mu=new Float64Array(p),sdv=new Float64Array(p);
+  for(let j=0;j<p;j++){let s=0;for(const li of tr)s+=X[li*p+j];mu[j]=s/tr.length;let ss=0;for(const li of tr)ss+=(X[li*p+j]-mu[j])**2;sdv[j]=Math.sqrt(ss/Math.max(1,tr.length-1))||1;}
+  const Z=new Float64Array(m*p);for(let k=0;k<m*p;k++){const j=k%p;Z[k]=(X[k]-mu[j])/sdv[j];}
+  const mode={};feats.filter(c=>c.t==="cat").forEach(c=>{const cnt=new Array(c.levels.length).fill(0);tr.forEach(li=>cnt[c.v[rows[li]]]++);mode[c.k]=cnt.indexOf(Math.max(...cnt));});
+  const o={rows,m,p,X,Z,y,tr,te,dc,mu,sd:sdv,med,mode,dups,imputed,sampled,feats,pos:cfg.pos,neg:negOf(cfg.target,cfg.pos),target:cfg.target};
+  PREP.set(key,o);if(PREP.size>6)PREP.delete(PREP.keys().next().value);return o;}
+
+/* ---- regresión logística: Newton-Raphson (IRLS) con L2 = 1 sobre variables estandarizadas ---- */
+function solve(A,b){const n=b.length,M=A.map((r,i)=>{const a=Array.from(r);a.push(b[i]);return a;});
+  for(let c=0;c<n;c++){let pv=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[pv][c]))pv=r;const tmp=M[c];M[c]=M[pv];M[pv]=tmp;const d=M[c][c]||1e-12;
+    for(let r=c+1;r<n;r++){const f=M[r][c]/d;if(f)for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}}
+  const x=new Float64Array(n);for(let r=n-1;r>=0;r--){let s=M[r][n];for(let k=r+1;k<n;k++)s-=M[r][k]*x[k];x[r]=s/(M[r][r]||1e-12);}return x;}
+function fitLogit(P){const {Z,y,tr,p}=P,q=p+1,lam=1,w=new Float64Array(q);
+  for(let it=0;it<50;it++){const H=Array.from({length:q},()=>new Float64Array(q)),g=new Float64Array(q);
+    for(const i of tr){const o=i*p;let e=w[p];for(let j=0;j<p;j++)e+=w[j]*Z[o+j];const mu=1/(1+Math.exp(-e)),wt=Math.max(mu*(1-mu),1e-9),res=y[i]-mu;
+      for(let j=0;j<q;j++){const xj=j<p?Z[o+j]:1;g[j]+=xj*res;const a=wt*xj,Hj=H[j];for(let k=0;k<=j;k++)Hj[k]+=a*(k<p?Z[o+k]:1);}}
+    for(let j=0;j<q;j++){for(let k=0;k<j;k++)H[k][j]=H[j][k];if(j<p){H[j][j]+=lam;g[j]-=lam*w[j];}}
+    const d=solve(H,g);let mx=0;for(let j=0;j<q;j++){w[j]+=d[j];mx=Math.max(mx,Math.abs(d[j]));}if(!(mx>1e-8))break;}
+  return{type:"logit",w};}
+function pLogit(M,z){const p=z.length;let e=M.w[p];for(let j=0;j<p;j++)e+=M.w[j]*z[j];return 1/(1+Math.exp(-e));}
+
+/* ---- árbol de decisión: CART con índice de Gini ---- */
+function fitTree(P,maxD,minLeaf){const {X,y,p}=P;
+  function grow(rows,depth){const n=rows.length;let np=0;for(const i of rows)np+=y[i];const nd={n,np,p:np/n};
+    if(depth>=maxD||n<2*minLeaf||np===0||np===n)return nd;
+    const g0=2*nd.p*(1-nd.p);let best=null;
+    for(let j=0;j<p;j++){const s=rows.slice().sort((a,b)=>X[a*p+j]-X[b*p+j]);let lp=0;
+      for(let k=0;k<n-1;k++){lp+=y[s[k]];const nl=k+1;if(n-nl<minLeaf)break;if(nl<minLeaf)continue;const a=X[s[k]*p+j],b=X[s[k+1]*p+j];if(a===b)continue;
+        const pl=lp/nl,pr=(np-lp)/(n-nl),g=(nl*2*pl*(1-pl)+(n-nl)*2*pr*(1-pr))/n;if(!best||g<best.g-1e-12)best={g,j,t:(a+b)/2};}}
+    if(!best||g0-best.g<1e-9)return nd;
+    const L=[],R=[];for(const i of rows)(X[i*p+best.j]<=best.t?L:R).push(i);
+    nd.j=best.j;nd.t=best.t;nd.gain=(g0-best.g)*n;nd.l=grow(L,depth+1);nd.r=grow(R,depth+1);return nd;}
+  return{type:"tree",root:grow(P.tr.slice(),0)};}
+function pTree(M,x,path){let nd=M.root;while(nd.l){if(path)path.push(nd);nd=x[nd.j]<=nd.t?nd.l:nd.r;}if(path)path.push(nd);return nd.p;}
+
+/* ---- k vecinos ---- */
+function fitKnn(P,k,seed){let ref=P.tr;if(ref.length>KNN_REF)ref=shuffle(ref.slice(),mulberry(seed+3)).slice(0,KNN_REF);return{type:"knn",k:Math.max(1,Math.min(k,ref.length)),ref};}
+function knnFind(M,P,z){const {Z,p,y}=P,k=M.k,bd=new Float64Array(k).fill(Infinity),bi=new Int32Array(k).fill(-1);
+  for(const i of M.ref){const o=i*p;let d=0;for(let j=0;j<p;j++){const t=Z[o+j]-z[j];d+=t*t;if(d>=bd[k-1])break;}
+    if(d<bd[k-1]){let q=k-1;while(q>0&&bd[q-1]>d){bd[q]=bd[q-1];bi[q]=bi[q-1];q--;}bd[q]=d;bi[q]=i;}}
+  let s=0;for(let q=0;q<k;q++)s+=y[bi[q]];return{p:s/k,bi,bd};}
+
+function rowX(P,li){return P.X.subarray(li*P.p,(li+1)*P.p);}
+function rowZ(P,li){return P.Z.subarray(li*P.p,(li+1)*P.p);}
+function prob(M,P,x,z){return M.type==="logit"?pLogit(M,z):M.type==="tree"?pTree(M,x):knnFind(M,P,z).p;}
+
+/* ---- métricas ---- */
+function mets(p,y,cut){let tp=0,fp=0,fn=0,tn=0;for(let i=0;i<p.length;i++){const h=p[i]>=cut-1e-12;if(y[i]){if(h)tp++;else fn++;}else{if(h)fp++;else tn++;}}
+  const n=p.length,prec=tp+fp?tp/(tp+fp):NaN,rec=tp+fn?tp/(tp+fn):NaN;
+  return{tp,fp,fn,tn,n,acc:(tp+tn)/n,prec,rec,f1:Number.isFinite(prec)&&Number.isFinite(rec)?(prec+rec?2*prec*rec/(prec+rec):0):NaN,base:Math.max(tp+fn,fp+tn)/n,basePos:tp+fn>fp+tn};}
+function auc(p,y){const n=p.length,idx=Array.from({length:n},(_,i)=>i).sort((a,b)=>p[a]-p[b]);let r=0,np=0,i=0;
+  while(i<n){let j=i;while(j+1<n&&p[idx[j+1]]===p[idx[i]])j++;const rk=(i+j)/2+1;for(let k=i;k<=j;k++)if(y[idx[k]]){r+=rk;np++;}i=j+1;}
+  const nn=n-np;return np&&nn?(r-np*(np+1)/2)/(np*nn):NaN;}
+
+function clfTrain(cfg){const P=getPrep(cfg),t0=performance.now();
+  const M=cfg.model==="logit"?fitLogit(P):cfg.model==="tree"?fitTree(P,cfg.depth,cfg.leaf):fitKnn(P,cfg.k,cfg.seed);
+  let te=P.te,trE=P.tr,teS=0,trS=0;
+  if(M.type==="knn"){if(te.length>KNN_TEST){teS=te.length;te=shuffle(te.slice(),mulberry(cfg.seed+5)).slice(0,KNN_TEST);}if(trE.length>1500){trS=trE.length;trE=shuffle(trE.slice(),mulberry(cfg.seed+9)).slice(0,1500);}}
+  const pt=Float64Array.from(te,li=>prob(M,P,rowX(P,li),rowZ(P,li))),yt=Uint8Array.from(te,li=>P.y[li]);
+  const pr=Float64Array.from(trE,li=>prob(M,P,rowX(P,li),rowZ(P,li))),yr=Uint8Array.from(trE,li=>P.y[li]);
+  return{cfg:Object.assign({},cfg,{feats:cfg.feats.slice()}),P,M,te,pt,yt,pr,yr,auc:auc(pt,yt),teS,trS,ms:performance.now()-t0};}
+function paramsTxt(c){return c.model==="tree"?`profundidad ${c.depth} · hoja ≥ ${c.leaf}`:c.model==="knn"?`k = ${c.k}`:"—";}
+
+/* ---- abrir / cerrar ---- */
+function clfShow(preset,q){if(!D)return;imp.hidden=true;clfBox.hidden=false;$("#btn-clf").setAttribute("aria-pressed","true");
+  if(!C||C.ds!==dsKey)clfInit();
+  if(!C.none)clfApply(preset);
+  const fq=$("#clf-q");if(q&&q.f){fq.hidden=false;fq.innerHTML=`<h3>Pregunta guiada · ${esc(q.t)}</h3>${q.f}`;}else fq.hidden=true;
+  clfRender();clfBox.scrollTop=0;
+  if(preset&&preset.train&&!C.none&&!C.runs.length)clfDoTrain();}
+function clfHide(){clfBox.hidden=true;$("#btn-clf").setAttribute("aria-pressed","false");hideTip();}
+function clfOnDS(){if(!clfBox.hidden&&(!C||C.ds!==dsKey))clfShow();}
+$("#btn-clf").onclick=()=>clfBox.hidden?clfShow():clfHide();
+$("#clf-close").onclick=clfHide;
+$("#clf-save").onclick=()=>saveAnalysis();
+
+/* ---- render general ---- */
+function clfRender(){$("#clf-ds").innerHTML=`Dataset: <b>${esc(D.name)}</b> · ${nf(D.n)} filas · ${D.cols.length} variables.`;
+  $("#clf-none").hidden=!C.none;$("#clf-body").hidden=C.none;if(C.none)return;
+  renderTarget();renderExplore();renderFeats();renderOpts();renderModelCtl();renderResults();renderPredict();}
+
+function renderTarget(){const T=clfTargets(),st=$("#c-target"),sp=$("#c-pos");
+  st.innerHTML=T.map(c=>`<option value="${esc(c.k)}">${esc(c.k)} (${c.levels.length} categorías)</option>`).join("");st.value=C.target;
+  sp.innerHTML=col(C.target).levels.map(l=>`<option value="${esc(l)}">${esc(l)}</option>`).join("");sp.value=C.pos;}
+$("#c-dl").onclick=()=>{const q=v=>/[,"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v,lines=[D.cols.map(c=>q(c.k)).join(",")];
+  for(let i=0;i<D.n;i++)lines.push(D.cols.map(c=>c.t==="num"?(Number.isFinite(c.v[i])?String(c.v[i]):""):q(String(c.levels[c.v[i]]))).join(","));
+  saveBlob(new Blob([lines.join("\n")],{type:"text/csv;charset=utf-8"}),slug(D.name)+".csv");};
+$("#c-target").onchange=e=>{setTarget(e.target.value);clfRender();};
+$("#c-pos").onchange=e=>{C.pos=e.target.value;C.ex=null;clfRender();};
+
+function renderExplore(){const ex=clfEx(),pos=qq(C.pos),neg=qq(negOf(C.target,C.pos)),sh=ex.np/ex.n,maj=sh>=.5?pos:neg;
+  $("#c-tiles").innerHTML=[[nf(ex.n),"Filas"],[pc(sh),`son ${pos} (${nf(ex.np)})`],[pc(Math.max(sh,1-sh)),`acierta un modelo que diga siempre ${maj}`],[nf(ex.miss),"valores faltantes en variables numéricas"],[nf(C.dupN),"filas duplicadas (copias exactas)"]]
+    .map(t=>`<div class="tile"><div class="v">${t[0]}</div><div class="l">${t[1]}</div></div>`).join("");
+  const mx=Math.max(.05,...ex.rows.map(r=>r.s));
+  let h=`<table><thead><tr><th>Variable</th><th class="num">Media en ${pos}</th><th class="num">Media en ${neg}</th><th>Asociación con ${pos}</th><th class="num">Faltantes</th></tr></thead><tbody>`;
+  ex.rows.forEach(r=>{const c=r.c,bar=`<span class="sbar"><span class="trk"><i style="width:${(r.s/mx*100).toFixed(1)}%;background:${r.num&&r.r<0?"var(--hot)":"var(--s1)"}"></i></span><code>${r.num?"r = "+nf(r.r,2):"V = "+nf(r.s,2)}</code></span>`;
+    h+=r.num?`<tr><td>${esc(label(c))}</td><td class="num">${fmt(r.mp)}</td><td class="num">${fmt(r.mn)}</td><td>${bar}</td><td class="num">${r.miss?nf(r.miss):"—"}</td></tr>`
+      :`<tr><td>${esc(c.k)}</td><td colspan="2" style="font-size:12.5px;color:var(--ink-2)">% de ${pos} por categoría: ${r.rate.map(([l,v])=>esc(l)+" "+pc(v)).join(" · ")}</td><td>${bar}</td><td class="num">—</td></tr>`;});
+  $("#c-ftab").innerHTML=h+`</tbody></table>`;
+  $("#c-verify1").innerHTML=`<b>Para verificar.</b> Compare estas cifras con las que le dio su IA: el porcentaje de ${pos}, alguna media por clase, los faltantes y los duplicados. La asociación es la correlación <i>r</i> entre la variable y la clase (1 = ${pos}, 0 = ${neg}): positiva en azul, negativa en rosa. Para variables categóricas se usa la V de Cramér (0 = sin relación, 1 = máxima).`;}
+
+function renderFeats(){const ex=clfEx();
+  $("#c-feats").innerHTML=ex.rows.map(r=>`<label title="${esc(r.c.k)}"><input type="checkbox" value="${esc(r.c.k)}"${C.feats.includes(r.c.k)?" checked":""}><span>${esc(r.c.k)}</span><small>${r.num?"r "+nf(r.r,2):"V "+nf(r.s,2)}</small></label>`).join("");
+  $$("#c-feats input").forEach(i=>i.onchange=()=>{C.feats=$$("#c-feats input").filter(x=>x.checked).map(x=>x.value);renderOpts();});}
+$$("#c-presets button").forEach(b=>b.onclick=()=>{const ex=clfEx();C.feats=b.dataset.p==="all"?ex.rows.map(r=>r.c.k):b.dataset.p==="top4"?ex.rows.slice(0,4).map(r=>r.c.k):[];renderFeats();renderOpts();});
+
+function renderOpts(){$("#c-dedupe").checked=C.dedupe;$("#c-dupn").textContent=C.dupN?`(${nf(C.dupN)} en este dataset)`:"(no hay)";
+  $("#c-test").value=C.test;$("#c-testv").textContent=C.test+"%";$("#c-seed").value=C.seed;
+  const t=col(C.target),pi=t.levels.indexOf(C.pos),seen=C.dedupe?new Set():null;let m=0,np=0;
+  for(let i=0;i<D.n;i++){if(seen){const k=rowKey(i);if(seen.has(k))continue;seen.add(k);}m++;if(t.v[i]===pi)np++;}
+  let note="";if(m>CLF_MAX){np=Math.round(np*CLF_MAX/m);note=` Se usa una muestra aleatoria de ${nf(CLF_MAX)} de las ${nf(m)} filas.`;m=CLF_MAX;}
+  const kP=Math.round(np*C.test/100),kN=Math.round((m-np)*C.test/100),pos=qq(C.pos);
+  $("#c-split").innerHTML=`<b>${nf(C.feats.length)}</b> variables elegidas. Entrenamiento: <b>${nf(m-kP-kN)}</b> filas (${nf(np-kP)} ${pos}) · Prueba: <b>${nf(kP+kN)}</b> filas (${nf(kP)} ${pos}).${C.dedupe&&C.dupN?` Se quitaron ${nf(C.dupN)} duplicados.`:""}${note} La división es <b>estratificada</b>: las dos partes conservan la proporción de ${pos}. La misma semilla produce siempre la misma división.`;
+  const w=$("#c-dupwarn");w.hidden=C.dedupe||!C.dupN;
+  w.innerHTML=`<b>Duplicados incluidos.</b> Copias idénticas de un mismo caso pueden quedar a la vez en entrenamiento y en prueba: el modelo «reconoce» casos que ya vio y la métrica de prueba se infla. Entrene el mismo modelo con y sin duplicados y compare, en especial con k vecinos y k = 1.`;}
+$("#c-dedupe").onchange=e=>{C.dedupe=e.target.checked;renderOpts();};
+$("#c-test").oninput=e=>{C.test=+e.target.value;renderOpts();};
+$("#c-seed").onchange=e=>{const v=Math.round(+e.target.value);C.seed=v>=1?Math.min(v,99999):42;renderOpts();};
+$("#c-reseed").onclick=()=>{C.seed=1+Math.floor(Math.random()*99999);renderOpts();};
+
+function renderModelCtl(){const box=$("#c-models");
+  box.innerHTML=Object.keys(MODELS).map(k=>`<button type="button" data-m="${k}" aria-pressed="${k===C.model}">${MODELS[k]}</button>`).join("");
+  $$("button",box).forEach(b=>b.onclick=()=>{C.model=b.dataset.m;renderModelCtl();});
+  const pr=$("#c-params");
+  pr.innerHTML=C.model==="tree"?`<label>Profundidad máx. <input type="number" id="c-depth" min="1" max="8" step="1" style="width:70px" value="${C.depth}"></label><label>Mínimo por hoja <input type="number" id="c-leaf" min="1" max="500" step="1" style="width:80px" value="${C.leaf}"></label>`
+    :C.model==="knn"?`<label>k <input type="number" id="c-k" min="1" max="99" step="1" style="width:70px" value="${C.k}"></label>`:`<span class="src" style="margin:0">Sin parámetros que ajustar.</span>`;
+  const num=(id,lo,hi,key)=>{const i=$("#"+id);if(i)i.onchange=()=>{let v=Math.round(+i.value);if(!(v>=lo))v=lo;if(v>hi)v=hi;C[key]=v;i.value=v;};};
+  num("c-depth",1,8,"depth");num("c-leaf",1,500,"leaf");num("c-k",1,99,"k");
+  $("#c-mdesc").innerHTML=MDESC[C.model];}
+
+function status(t){$("#c-status").textContent=t;}
+async function clfDoTrain(){const cfg=curCfg();if(!cfg.feats.length){status("Elija al menos una variable en el paso 2.");return;}
+  const b=$("#c-train");b.disabled=true;status("Entrenando…");await new Promise(r=>setTimeout(r,30));
+  try{const run=clfTrain(cfg);C.runs.push(run);if(C.runs.length>RUNS_MAX)C.runs.shift();C.cur=C.runs.length-1;C.inp=null;
+    status(`Listo: ${MODELS[cfg.model]} entrenado en ${nf(run.ms,0)} ms.`);renderResults();renderPredict();}
+  catch(e){console.error(e);status("No se pudo entrenar: "+e.message);}
+  b.disabled=false;}
+$("#c-train").onclick=clfDoTrain;
+
+/* ---- resultados ---- */
+function curRun(){return C&&C.runs[C.cur]||null;}
+function renderResults(){const run=curRun();$("#c-res").hidden=!run;if(!run)return;
+  $("#c-cut").value=run.cfg.cutoff;$("#c-cutv").textContent=nf(run.cfg.cutoff,2);
+  renderMetrics(run);drawThr(run);renderExplain(run);renderCmp();}
+function renderMetrics(run){const c=run.cfg,P=run.P,m=mets(run.pt,run.yt,c.cutoff),mt=mets(run.pr,run.yr,c.cutoff),pos=qq(c.pos),neg=qq(P.neg);
+  const cell=(cls,v,t,d)=>`<div class="cell ${cls}"><span class="v">${nf(v)}</span><span class="t"><b>${t}</b><br>${d}</span></div>`;
+  $("#c-cmt").textContent=`Matriz de confusión · ${MODELS[c.model]}`;
+  $("#c-cm").innerHTML=`<div></div><div class="h">Predice ${pos}</div><div class="h">Predice ${neg}</div>`+
+    `<div class="h">Real ${pos}</div>${cell("ok",m.tp,"Verdaderos positivos",`${pos} detectados`)}${cell("bad",m.fn,"Falsos negativos",`${pos} que el modelo no detectó`)}`+
+    `<div class="h">Real ${neg}</div>${cell("bad",m.fp,"Falsos positivos",`${neg} que el modelo clasificó como ${pos}`)}${cell("ok",m.tn,"Verdaderos negativos",`${neg} bien descartados`)}`;
+  $("#c-cmcap").innerHTML=`${nf(m.n)} casos de prueba${run.teS?` (muestra de ${nf(run.teS)})`:""} · umbral ${nf(c.cutoff,2)} · ${nf(c.feats.length)} variables · semilla ${c.seed} · duplicados ${c.dedupe?"quitados":"incluidos"}.`;
+  const tl=(v,l,d)=>`<div class="tile"><div class="v">${v}</div><div class="l">${l}</div><div class="d">${d}</div></div>`;
+  $("#c-mets").innerHTML=tl(pc(m.acc),"Exactitud","aciertos sobre el total (<i>accuracy</i>)")+tl(pc(m.prec),"Precisión",`de los que predice ${pos}, cuántos lo son (<i>precision</i>)`)+
+    tl(pc(m.rec),"Sensibilidad",`de los ${pos} reales, cuántos detecta (<i>recall</i>)`)+tl(Number.isFinite(m.f1)?nf(m.f1,2):"—","F1","promedio armónico de precisión y sensibilidad")+
+    tl(Number.isFinite(run.auc)?nf(run.auc,2):"—","AUC","capacidad de ordenar los casos, sin depender del umbral (0,5 = azar; 1 = perfecto)");
+  $("#c-base").innerHTML=`<b>Línea de base:</b> un modelo que diga siempre ${m.basePos?pos:neg} acierta el <b>${pc(m.base)}</b> de los casos de prueba, sin aprender nada. `+
+    `<b>Exactitud en entrenamiento:</b> ${pc(mt.acc)}${run.trS?` (muestra de 1.500)`:""}. Si es mucho más alta que en prueba, el modelo memoriza los casos que vio en lugar de aprender un patrón general.`;
+  $("#c-cutnote").innerHTML=`El modelo clasifica un caso como ${pos} cuando su probabilidad estimada es mayor o igual al umbral. <b>Bajar el umbral</b> detecta más ${pos} (más sensibilidad) a costa de más falsos positivos; <b>subirlo</b> hace lo contrario. Haga clic o arrastre sobre el gráfico para moverlo.`;}
+
+let thrLine=null;
+function drawThr(run){const svg=$("#c-thr"),W2=Math.max(300,svg.parentNode.clientWidth-24),H2=230,m={l:46,r:12,t:12,b:38};
+  svg.setAttribute("viewBox",`0 0 ${W2} ${H2}`);svg.innerHTML="";
+  const xs=lin(0,1,m.l,W2-m.r),ys=lin(0,1,H2-m.b,m.t),g=el("g",{class:"grid"}),ax=el("g",{class:"axis"});
+  [0,.25,.5,.75,1].forEach(t=>{g.appendChild(el("line",{x1:m.l,x2:W2-m.r,y1:ys(t),y2:ys(t)}));ax.appendChild(el("text",{x:m.l-6,y:ys(t)+4,"text-anchor":"end"},nf(t*100,0)+"%"));});
+  for(let t=0;t<=10;t++)ax.appendChild(el("text",{x:xs(t/10),y:H2-m.b+16,"text-anchor":"middle"},nf(t/10,1)));
+  ax.appendChild(el("text",{x:(m.l+W2-m.r)/2,y:H2-4,"text-anchor":"middle"},"Umbral de decisión"));svg.append(g,ax);
+  const T=[];for(let i=1;i<=99;i++)T.push(i/100);const MM=T.map(t=>mets(run.pt,run.yt,t)),base=MM[0].base;
+  svg.appendChild(el("line",{x1:m.l,x2:W2-m.r,y1:ys(base),y2:ys(base),style:"stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 5"}));
+  const S3=[["acc","var(--accent)","Exactitud"],["prec","var(--s1)","Precisión"],["rec","var(--hot)","Sensibilidad"]];
+  S3.forEach(([k,c])=>{let d="",pen=false;T.forEach((t,i)=>{const v=MM[i][k];if(!Number.isFinite(v)){pen=false;return;}d+=(pen?"L":"M")+xs(t).toFixed(1)+" "+ys(v).toFixed(1);pen=true;});
+    svg.appendChild(el("path",{d,fill:"none",style:`stroke:${c};stroke-width:2.4;stroke-linejoin:round`}));});
+  thrLine=el("line",{x1:xs(run.cfg.cutoff),x2:xs(run.cfg.cutoff),y1:m.t,y2:H2-m.b,style:"stroke:var(--gold);stroke-width:2.5"});svg.appendChild(thrLine);
+  $("#c-thrleg").innerHTML=S3.map(([,c,l])=>`<span><i style="background:${c}"></i>${l}</span>`).join("")+`<span><i style="background:var(--muted)"></i>Línea de base</span><span><i style="background:var(--gold)"></i>Umbral actual</span>`;
+  const hit=el("rect",{x:m.l,y:m.t,width:W2-m.l-m.r,height:H2-m.t-m.b,class:"hit"});svg.appendChild(hit);
+  const at=e=>{const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)*W2/r.width;return Math.min(.95,Math.max(.05,Math.round((x-m.l)/(W2-m.l-m.r)*100)/100));};
+  hit.addEventListener("pointerdown",e=>{hit.setPointerCapture(e.pointerId);setCut(at(e));});
+  hit.addEventListener("pointermove",e=>{const t=at(e),k=MM[Math.round(t*100)-1];if(e.buttons&1)setCut(t);
+    showTip(`Umbral <b>${nf(t,2)}</b><br>Exactitud ${pc(k.acc)} · Precisión ${pc(k.prec)} · Sensibilidad ${pc(k.rec)}<br>VP ${nf(k.tp)} · FP ${nf(k.fp)} · FN ${nf(k.fn)} · VN ${nf(k.tn)}`,e.clientX,e.clientY);});
+  hit.addEventListener("pointerleave",hideTip);
+  thrLine._xs=xs;}
+function setCut(v){const run=curRun();if(!run)return;v=Math.round(v*100)/100;run.cfg.cutoff=v;C.cutoff=v;$("#c-cut").value=v;$("#c-cutv").textContent=nf(v,2);
+  if(thrLine){const x=thrLine._xs(v);thrLine.setAttribute("x1",x);thrLine.setAttribute("x2",x);}
+  renderMetrics(run);renderExplain(run);renderCmp();predictOut();}
+$("#c-cut").oninput=e=>setCut(+e.target.value);
+
+function coefRows(items,sym){const mx=Math.max(1e-9,...items.map(i=>Math.abs(i.v)));
+  return `<div class="coefs">`+items.map(i=>{const w=Math.abs(i.v)/mx*(sym?50:100),left=sym?(i.v>=0?50:50-w):0;
+    return `<span>${esc(i.name)}</span><span class="trk${sym?"":" one"}"><i style="left:${left.toFixed(2)}%;width:${w.toFixed(2)}%;background:${i.v>=0?"var(--s1)":"var(--hot)"}"></i></span><span class="val">${i.txt}</span>`;}).join("")+`</div>`;}
+function cond(P,nd,right){const d=P.dc[nd.j];if(d.kind==="dum")return `${esc(d.src.k)} ${right?"es":"no es"} ${qq(d.lv)}`;return `${esc(d.name)} ${right?"&gt;":"≤"} ${fmtT(nd.t)}`;}
+function leafHTML(P,nd,cut,pos,neg){const isP=nd.p>=cut-1e-12;return `<span class="leaf ${isP?"pos":"neg"}">→ ${isP?pos:neg} · ${pc(nd.p,0)} ${pos} · n = ${nf(nd.n)}</span>`;}
+function treeHTML(P,nd,cut,pos,neg){const sub=(ch)=>ch.l?treeHTML(P,ch,cut,pos,neg):leafHTML(P,ch,cut,pos,neg);
+  return `<ul><li>Si ${cond(P,nd,false)} ${sub(nd.l)}</li><li>Si ${cond(P,nd,true)} ${sub(nd.r)}</li></ul>`;}
+function renderExplain(run){const c=run.cfg,P=run.P,M=run.M,pos=qq(c.pos),neg=qq(P.neg),box=$("#c-explain");
+  if(M.type==="logit"){const items=P.dc.map((d,j)=>({name:d.kind==="dum"?`${d.src.k}: ${d.lv} (vs. ${d.ref})`:d.name,v:M.w[j]})).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v));
+    items.forEach(i=>i.txt=(i.v>=0?"+":"")+nf(i.v,2)+` · ×${nf(Math.exp(i.v),2)}`);
+    box.innerHTML=`<p class="sub" style="margin-bottom:10px">Pesos sobre variables estandarizadas: cuánto cambian las chances (<i>odds</i>) de ${pos} cuando la variable sube un desvío estándar y las demás quedan fijas. Azul empuja hacia ${pos}; rosa, hacia ${neg}. «×1,50» significa que las chances se multiplican por 1,5. Un peso es una asociación dentro del modelo, no una causa.</p>`+coefRows(items,true);}
+  else if(M.type==="tree"){const imp=new Map();(function walk(nd){if(!nd.l)return;const s=P.dc[nd.j].src.k;imp.set(s,(imp.get(s)||0)+nd.gain);walk(nd.l);walk(nd.r);})(M.root);
+    const tot=[...imp.values()].reduce((a,b)=>a+b,0)||1,items=[...imp.entries()].map(([name,v])=>({name,v:v/tot,txt:pc(v/tot,0)})).sort((a,b)=>b.v-a.v);
+    let leaves=0;(function cnt(nd){if(!nd.l){leaves++;return;}cnt(nd.l);cnt(nd.r);})(M.root);
+    box.innerHTML=M.root.l?`<p class="sub" style="margin-bottom:10px">${nf(leaves)} hojas. Cada regla se lee de arriba hacia abajo; cada hoja muestra el % de ${pos} entre los casos de entrenamiento que llegan a ella y la clase que asigna con el umbral actual.</p><div class="ctree">${treeHTML(P,M.root,c.cutoff,pos,neg)}</div>`+
+      `<h4 class="ch" style="margin-top:14px">Importancia de las variables · cuánto reduce la impureza cada una</h4>`+coefRows(items,false)
+      :`<p class="sub">El árbol no encontró ninguna división útil con estas variables y parámetros: asigna a todos la proporción de ${pos} del entrenamiento (${pc(M.root.p)}).</p>`;}
+  else box.innerHTML=`<p class="sub">Con <b>k = ${M.k}</b>, cada caso se clasifica según cuántos de sus ${M.k} vecinos más parecidos del entrenamiento son ${pos} (distancia euclídea sobre variables estandarizadas). No hay reglas ni pesos para leer: el «modelo» es el propio conjunto de entrenamiento${M.ref.length<P.tr.length?` (una muestra de ${nf(M.ref.length)} casos)`:""}. Con k = 1 el modelo acierta casi todo en entrenamiento, porque cada caso es su propio vecino: compare con la exactitud en prueba.</p>`;}
+
+function renderCmp(){const box=$("#c-cmp");
+  let h=`<table><thead><tr><th>#</th><th>Modelo</th><th>Parámetros</th><th class="num">Variables</th><th>Duplicados</th><th class="num">Prueba</th><th class="num">Semilla</th><th class="num">Umbral</th><th class="num">Exactitud</th><th class="num">Precisión</th><th class="num">Sensibilidad</th><th class="num">F1</th><th class="num">AUC</th><th class="num">Exactitud entren.</th></tr></thead><tbody>`;
+  C.runs.forEach((r,i)=>{const c=r.cfg,m=mets(r.pt,r.yt,c.cutoff),mt=mets(r.pr,r.yr,c.cutoff);
+    h+=`<tr data-i="${i}" class="${i===C.cur?"cur":""}"><td>${i+1}</td><td>${MODELS[c.model]}<small>${esc(c.target)} = ${qq(c.pos)}</small></td><td>${paramsTxt(c)}</td><td class="num" title="${esc(c.feats.join(", "))}">${c.feats.length}</td><td>${c.dedupe?"quitados":"incluidos"}</td><td class="num">${c.test}%</td><td class="num">${c.seed}</td><td class="num">${nf(c.cutoff,2)}</td><td class="num">${pc(m.acc)}</td><td class="num">${pc(m.prec)}</td><td class="num">${pc(m.rec)}</td><td class="num">${Number.isFinite(m.f1)?nf(m.f1,2):"—"}</td><td class="num">${Number.isFinite(r.auc)?nf(r.auc,2):"—"}</td><td class="num">${pc(mt.acc)}</td></tr>`;});
+  box.innerHTML=h+`</tbody></table>`;
+  $$("tr[data-i]",box).forEach(tr=>tr.onclick=()=>{C.cur=+tr.dataset.i;C.inp=null;renderResults();renderPredict();});}
+$("#c-clear").onclick=()=>{C.runs=[];C.cur=-1;C.inp=null;status("");renderResults();renderPredict();};
+$("#c-csv").onclick=()=>{if(!C.runs.length)return;const rows=[["#","Modelo","Variable a predecir","Clase positiva","Parámetros","Cantidad de variables","Duplicados","Prueba","Semilla","Umbral","VP","FN","FP","VN","Exactitud","Precisión","Sensibilidad","F1","AUC","Exactitud entrenamiento","Variables"]];
+  C.runs.forEach((r,i)=>{const c=r.cfg,m=mets(r.pt,r.yt,c.cutoff),mt=mets(r.pr,r.yr,c.cutoff);
+    rows.push([i+1,MODELS[c.model],c.target,c.pos,paramsTxt(c),c.feats.length,c.dedupe?"quitados":"incluidos",c.test+"%",c.seed,nf(c.cutoff,2),m.tp,m.fn,m.fp,m.tn,pc(m.acc),pc(m.prec),pc(m.rec),Number.isFinite(m.f1)?nf(m.f1,2):"",Number.isFinite(r.auc)?nf(r.auc,2):"",pc(mt.acc),c.feats.join(", ")].map(String));});
+  const q=v=>/[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;
+  saveBlob(new Blob([String.fromCharCode(0xFEFF)+rows.map(r=>r.map(q).join(";")).join("\r\n")],{type:"text/csv;charset=utf-8"}),slug(D.name)+"-comparacion-modelos.csv");};
+$("#c-png").onclick=()=>{const run=curRun();if(!run)return;const c=run.cfg,P=run.P,m=mets(run.pt,run.yt,c.cutoff),mt=mets(run.pr,run.yr,c.cutoff);
+  const F=(w,s,f)=>w+" "+s+"px "+css(f),Wc=980,sc=2,cv2=document.createElement("canvas");let x=cv2.getContext("2d");
+  x.font=F(400,12.5,"--body");let nl=1,ln="";`Variables (${c.feats.length}): ${c.feats.join(", ")}`.split(" ").forEach(wd=>{const s2=ln?ln+" "+wd:wd;if(x.measureText(s2).width>Wc-48&&ln){nl++;ln=wd;}else ln=s2;});
+  const Hc=86+17*(nl-1)+34+270+80;cv2.width=Wc*sc;cv2.height=Hc*sc;x=cv2.getContext("2d");x.scale(sc,sc);
+  x.fillStyle=css("--surface");x.fillRect(0,0,Wc,Hc);
+  x.fillStyle=css("--ink");x.font=F(800,22,"--display");x.fillText(`Clasificador · ${D.name}`,24,38);
+  x.fillStyle=css("--ink-2");x.font=F(400,14,"--body");x.fillText(`${MODELS[c.model]}${c.model!=="logit"?" ("+paramsTxt(c)+")":""} · predice ${c.target} = «${c.pos}» · prueba ${c.test}% · semilla ${c.seed} · duplicados ${c.dedupe?"quitados":"incluidos"} · umbral ${nf(c.cutoff,2)}`,24,62);
+  const wrap=(t,x0,y0,mw,lh)=>{let line="",y=y0;t.split(" ").forEach(wd=>{const s=line?line+" "+wd:wd;if(x.measureText(s).width>mw&&line){x.fillText(line,x0,y);line=wd;y+=lh;}else line=s;});if(line)x.fillText(line,x0,y);return y;};
+  x.font=F(400,12.5,"--body");x.fillStyle=css("--muted");const yv=wrap(`Variables (${c.feats.length}): ${c.feats.join(", ")}`,24,86,Wc-48,17);
+  const y0=yv+34,cw=190,ch=118,x0=150;x.font=F(500,11,"--mono");x.fillStyle=css("--muted");x.textAlign="center";
+  x.fillText(`PREDICE «${c.pos}»`.toUpperCase(),x0+cw/2,y0);x.fillText(`PREDICE «${P.neg}»`.toUpperCase(),x0+cw+8+cw/2,y0);x.textAlign="right";
+  x.fillText(`REAL «${c.pos}»`.toUpperCase(),x0-10,y0+18+ch/2);x.fillText(`REAL «${P.neg}»`.toUpperCase(),x0-10,y0+26+ch*1.5);x.textAlign="left";
+  [[m.tp,"Verdaderos positivos",0,0,"--accent"],[m.fn,"Falsos negativos",1,0,"--hot"],[m.fp,"Falsos positivos",0,1,"--hot"],[m.tn,"Verdaderos negativos",1,1,"--accent"]].forEach(([v,l,i,j,col2])=>{
+    const cx=x0+i*(cw+8),cy=y0+10+j*(ch+8);x.fillStyle=css("--surface-2");x.fillRect(cx,cy,cw,ch);x.fillStyle=css(col2);x.fillRect(cx,cy,4,ch);
+    x.fillStyle=css("--ink");x.font=F(900,40,"--display");x.fillText(nf(v),cx+18,cy+58);x.fillStyle=css("--ink-2");x.font=F(400,13,"--body");x.fillText(l,cx+18,cy+86);});
+  const mx0=x0+2*cw+60;let my=y0+18;const row=(l,v)=>{x.fillStyle=css("--ink-2");x.font=F(400,15,"--body");x.fillText(l,mx0,my);x.fillStyle=css("--ink");x.font=F(800,20,"--display");x.textAlign="right";x.fillText(v,Wc-28,my);x.textAlign="left";my+=34;};
+  row("Exactitud (accuracy)",pc(m.acc));row("Precisión (precision)",pc(m.prec));row("Sensibilidad (recall)",pc(m.rec));row("F1",Number.isFinite(m.f1)?nf(m.f1,2):"—");row("AUC",Number.isFinite(run.auc)?nf(run.auc,2):"—");
+  row(`Línea de base (siempre «${m.basePos?c.pos:P.neg}»)`,pc(m.base));row("Exactitud en entrenamiento",pc(mt.acc));
+  x.fillStyle=css("--muted");x.font=F(400,12,"--body");x.fillText(`${nf(m.n)} casos de prueba que el modelo no vio durante el entrenamiento.`,24,Hc-46);
+  x.font=F(400,11,"--mono");x.fillText("UCEMA · Data Science 101 · Data Lab · Clasificador · "+new Date().toLocaleDateString("es-AR"),24,Hc-18);
+  cv2.toBlob(b=>saveBlob(b,slug(D.name)+"-clasificador-"+slug(MODELS[c.model])+".png"),"image/png");};
+
+/* ---- predecir un caso nuevo ---- */
+function typical(P){const v={};P.feats.forEach(c=>{if(c.t==="num"){const j=P.dc.findIndex(d=>d.src===c);v[c.k]=String(+P.med[j].toPrecision(4));}else v[c.k]=P.mode[c.k];});return v;}
+function renderPredict(){const run=curRun(),box=$("#c-inp"),btns=$("#c-pbtns");
+  if(!run){$("#c-psub").innerHTML="Entrene un modelo en el paso 3 para poder predecir.";box.innerHTML="";btns.innerHTML="";$("#c-pout").innerHTML="";return;}
+  const P=run.P,c=run.cfg;if(!C.inp||C.inp.run!==run)C.inp={run,vals:typical(P),real:null};
+  $("#c-psub").innerHTML=`Modelo actual: <b>${MODELS[c.model]}</b> (fila ${C.cur+1} de la comparación), con ${c.feats.length} variables. Escriba los valores de un caso nuevo, o cargue un caso del conjunto de prueba para ver si el modelo acierta. Los campos vacíos se completan con la mediana del entrenamiento.`;
+  btns.innerHTML=`<button class="btn" type="button" data-e="typ">Valores típicos (medianas)</button><button class="btn" type="button" data-e="1">Un caso de prueba ${qq(c.pos)}</button><button class="btn" type="button" data-e="0">Un caso de prueba ${qq(P.neg)}</button>`;
+  $$("button",btns).forEach(b=>b.onclick=()=>{if(b.dataset.e==="typ"){C.inp.vals=typical(P);C.inp.real=null;}
+    else{const want=+b.dataset.e,pool=run.te.filter(li=>P.y[li]===want);if(!pool.length)return;const li=pool[Math.floor(Math.random()*pool.length)],i=P.rows[li];
+      P.feats.forEach(f=>{C.inp.vals[f.k]=f.t==="num"?(Number.isFinite(f.v[i])?String(f.v[i]):""):f.v[i];});C.inp.real=want?c.pos:P.neg;C.inp.row=i;}
+    fillInputs(run);predictOut();});
+  box.innerHTML=P.feats.map(f=>`<label><span>${esc(label(f))}</span>${f.t==="num"?`<input type="number" step="any" data-k="${esc(f.k)}">`:`<select data-k="${esc(f.k)}">${f.levels.map((l,i)=>`<option value="${i}">${esc(l)}</option>`).join("")}</select>`}</label>`).join("");
+  $$("input,select",box).forEach(i=>i.oninput=()=>{const f=col(i.dataset.k);C.inp.vals[f.k]=f.t==="num"?i.value:+i.value;C.inp.real=null;predictOut();});
+  fillInputs(run);predictOut();}
+function fillInputs(run){$$("#c-inp [data-k]").forEach(i=>{const v=C.inp.vals[i.dataset.k];i.value=v==null?"":String(v);});}
+function predictOut(){const run=curRun(),out=$("#c-pout");if(!run||!C.inp){out.innerHTML="";return;}
+  const P=run.P,M=run.M,c=run.cfg,p=P.p,x=new Float64Array(p),z=new Float64Array(p);let filled=0;
+  P.dc.forEach((d,j)=>{const raw=C.inp.vals[d.src.k];if(d.kind==="num"){let v=parseFloat(String(raw).replace(",","."));if(!Number.isFinite(v)){v=P.med[j];filled++;}x[j]=v;}else x[j]=+raw===d.li?1:0;z[j]=(x[j]-P.mu[j])/P.sd[j];});
+  const path=[],kn=M.type==="knn"?knnFind(M,P,z):null,pr=M.type==="logit"?pLogit(M,z):M.type==="tree"?pTree(M,x,path):kn.p;
+  const isP=pr>=c.cutoff-1e-12,cls=isP?c.pos:P.neg,pos=qq(c.pos),neg=qq(P.neg);
+  let card=`<div class="pcard"><span class="l">Probabilidad estimada de ${pos}</span><div class="big-r">${pc(pr)}</div><div class="pmeter"><i style="width:${(pr*100).toFixed(1)}%"></i><b style="left:calc(${(c.cutoff*100).toFixed(1)}% - 1px)"></b></div>`+
+    `<span class="l">Con umbral ${nf(c.cutoff,2)} el modelo dice:</span><span class="dec ${isP?"pos":"neg"}">${esc(cls)}</span>`+
+    (C.inp.real!=null?`<span class="l" style="margin-top:6px">Clase real de este caso de prueba: <b>${esc(C.inp.real)}</b> · ${C.inp.real===cls?"<b style='color:var(--accent)'>acierto</b>":"<b style='color:var(--hot)'>error</b>"}</span>`:"")+
+    (filled?`<span class="l">${filled} campo(s) vacío(s) completado(s) con la mediana.</span>`:"")+`</div>`;
+  let ex="";
+  if(M.type==="logit"){const items=P.dc.map((d,j)=>({name:d.kind==="dum"?`${d.src.k}: ${d.lv}`:d.name,v:M.w[j]*z[j]})).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)).slice(0,10);
+    items.forEach(i=>i.txt=(i.v>=0?"+":"")+nf(i.v,2));
+    ex=`<p class="sub" style="margin-bottom:10px">Cómo llega el modelo a esa probabilidad: cada variable suma (azul, hacia ${pos}) o resta (rosa, hacia ${neg}) según su peso y cuánto se aleja este caso del promedio. Punto de partida (intercepto): ${nf(M.w[p],2)}. Se muestran las ${items.length} de mayor efecto.</p>`+coefRows(items,true);}
+  else if(M.type==="tree"){ex=`<p class="sub" style="margin-bottom:8px">Reglas que sigue este caso:</p><ol class="cpath">`+path.map((nd,i)=>nd.l?`<li>${cond(P,nd,x[nd.j]>nd.t)}</li>`:`<li>${leafHTML(P,nd,c.cutoff,pos,neg)}</li>`).join("")+`</ol>`;}
+  else{const show=Math.min(5,M.k),fs=P.dc.filter(d=>d.kind==="num").slice(0,4);let np=0;for(let q=0;q<M.k;q++)np+=P.y[kn.bi[q]];
+    ex=`<p class="sub" style="margin-bottom:8px">De los <b>${M.k}</b> vecinos más parecidos, <b>${np}</b> son ${pos}: ${pc(np/M.k)}. Los ${show} más cercanos:</p><div class="ctab"><table><thead><tr><th>#</th><th class="num">Distancia</th><th>Clase</th>${fs.map(d=>`<th class="num">${esc(d.name)}</th>`).join("")}</tr></thead><tbody>`+
+      Array.from({length:show},(_,q)=>{const li=kn.bi[q];return `<tr><td>${q+1}</td><td class="num">${nf(Math.sqrt(kn.bd[q]),2)}</td><td>${P.y[li]?esc(c.pos):esc(P.neg)}</td>${fs.map(d=>`<td class="num">${fmt(P.X[li*p+P.dc.indexOf(d)])}</td>`).join("")}</tr>`;}).join("")+`</tbody></table></div>`;}
+  out.innerHTML=`<div class="pout">${card}<div>${ex}</div></div>`;}
+
+/* ---- guardar / restaurar ---- */
+function clfState(){if(!C||C.none||C.ds!==dsKey)return null;const {target,pos,feats,dedupe,test,seed,model,depth,leaf,k,cutoff}=C;
+  return{target,pos,feats:feats.slice(),dedupe,test,seed,model,depth,leaf,k,cutoff,runs:C.runs.map(r=>r.cfg),cur:C.cur};}
+function clfRestore(st,open){clfInit();if(C.none||!st)return;
+  if(st.target&&col(st.target)&&clfTargets().includes(col(st.target)))setTarget(st.target,st.pos);
+  ["dedupe","test","seed","model","depth","leaf","k","cutoff"].forEach(k=>{if(st[k]!=null)C[k]=st[k];});
+  if(Array.isArray(st.feats))C.feats=st.feats.filter(k=>col(k)&&k!==C.target);
+  (st.runs||[]).forEach(cfg=>{try{C.runs.push(clfTrain(cfg));}catch(e){console.error(e);}});
+  C.cur=C.runs.length?Math.min(Math.max(0,st.cur|0),C.runs.length-1):-1;
+  if(open)clfShow();}
+
+addEventListener("resize",()=>{if(!clfBox.hidden){const r=curRun();if(r)drawThr(r);}});
+
+/* ---- preguntas guiadas del clasificador ---- */
+if(DATASETS.vinos&&!DATASETS.vinos.qs.some(q=>q.c==="clf"))DATASETS.vinos.qs.push(
+  {t:"¿Se puede predecir un buen vino?",s:"Clasificador · regresión logística y matriz de confusión",c:"clf",clf:{target:"Calidad",pos:"Bueno",model:"logit",train:true},
+   f:"Sólo el <b>19,6%</b> de los vinos es «Bueno»: un modelo que diga siempre «Malo» acierta el <b>80,4%</b> sin aprender nada. Ésa es la línea de base que cualquier modelo tiene que superar. Mire la matriz de confusión, no sólo la exactitud: ¿cuántos vinos buenos detecta el modelo?",
+   ta:"«¿Por qué la exactitud sola no alcanza para evaluar este modelo?»"},
+  {t:"Tres modelos, una bodega",s:"Clasificador · comparar modelos y elegir el umbral",c:"clf",clf:{target:"Calidad",pos:"Bueno",model:"tree"},
+   f:"Entrene la regresión logística, el árbol y k vecinos con las mismas variables y la misma semilla, y compárelos en la tabla. Después mueva el umbral: bajarlo detecta más vinos de la clase positiva a costa de más falsas alarmas. Si la bodega quiere detectar lotes defectuosos, ¿cuál debería ser la clase positiva?",
+   ta:"«Para una bodega que quiere detectar lotes defectuosos, ¿qué error es más caro: un falso positivo o un falso negativo?»"});
 
 Object.keys(DATASETS).forEach(addTab);
 loadDS(Object.keys(DATASETS)[0]);

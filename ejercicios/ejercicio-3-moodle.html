@@ -1,0 +1,107 @@
+<h3>Ejercicio 3 · ¿Este vino es bueno? Un clasificador hecho con IA, y auditado</h3>
+<p><strong>Data Science 101: Intro y Aplicaciones · UCEMA · Prof. Alfredo B. Roisenzvit</strong></p>
+
+<h4>El problema</h4>
+<p>Una bodega quiere saber, a partir de un análisis de laboratorio, si un vino va a ser calificado como <strong>bueno</strong> o <strong>malo</strong> por los catadores. Usted tiene el dataset <strong>Wine Quality</strong>: 6.497 vinos portugueses, tintos y blancos, con 11 mediciones físico-químicas y la calificación sensorial simplificada a «Bueno» / «Malo».</p>
+<p><strong>Su tarea:</strong> construir un modelo que clasifique cada vino como bueno o malo, evaluarlo con honestidad y recomendarle a la bodega qué modelo usar. Lo que se evalúa no es que la IA haga el trabajo, sino <strong>cómo usted la dirige y la controla</strong>.</p>
+
+<h4>Herramientas</h4>
+<p>Use <strong>las dos</strong>:</p>
+<ol>
+  <li><strong>Una IA con análisis de datos</strong> (ChatGPT, Claude, Gemini u otra que pueda leer un archivo y ejecutar código). Es obligatoria: el anexo con la conversación es parte de la entrega.</li>
+  <li><strong>El Clasificador del Data Lab</strong>: <a href="https://ucema-datalab.vercel.app" target="_blank">ucema-datalab.vercel.app</a> → dataset <strong>Vinos</strong> → botón <strong>Clasificador ◆</strong> (o las preguntas guiadas 9 y 10). Corre en su navegador, sin programar: muestra la exploración de los datos, entrena tres modelos (regresión logística, árbol de decisión y k vecinos), arma la matriz de confusión, permite mover el umbral de decisión y predecir un vino nuevo.</li>
+</ol>
+<p>El Data Lab es su <strong>verificación independiente</strong>: calcula las mismas cifras que le dará la IA, con un método que usted controla. Puede trabajar en el orden que prefiera:</p>
+<ul>
+  <li>pedirle el análisis a la IA y contrastarlo con el Data Lab, o</li>
+  <li>hacer los modelos en el Data Lab y pedirle a la IA que los replique, los explique o los critique.</li>
+</ul>
+<p>Lo que cuenta es que <strong>cada cifra importante del informe esté verificada por una segunda vía</strong>.</p>
+<p><strong>Para darle el dataset a la IA:</strong> en el Clasificador, paso 1, botón <strong>«Descargar el dataset completo (CSV) para su IA»</strong>. Es el mismo archivo con el que trabaja el Data Lab (6.497 filas, con la columna «Calidad» ya simplificada a «Bueno» / «Malo»), así las cifras se pueden comparar.</p>
+
+<h4>Consignas</h4>
+
+<h5>1. Exploración</h5>
+<p>Pídale a la IA una descripción de los datos: distribuciones de las variables, valores faltantes, <strong>balance de clases</strong> (qué proporción de vinos es «Bueno») y <strong>filas duplicadas</strong>.</p>
+<ul>
+  <li><strong>Verifique al menos dos cifras por su cuenta</strong> con el paso 1 del Clasificador (proporción de «Bueno», medias por clase, faltantes, duplicados) o con la vista Tabla del Data Lab.</li>
+  <li><em>Pista:</em> el dataset tiene filas repetidas. ¿La IA las detectó? ¿Qué hizo con ellas? ¿Por qué importan para medir un modelo?</li>
+</ul>
+
+<h5>2. Modelos</h5>
+<p>Entrene <strong>al menos dos modelos distintos</strong> (con la IA, en el Data Lab o en ambos) y compárelos.</p>
+<ul>
+  <li>Indique <strong>qué variables usó y por qué</strong>. El paso 1 del Clasificador muestra cuánto se asocia cada variable con la calidad. Puede probar con todas y con un subconjunto.</li>
+  <li>Evalúe siempre sobre <strong>datos de prueba</strong> que el modelo no vio. Anote el porcentaje de prueba y la semilla para que el resultado se pueda repetir.</li>
+  <li>Compare los modelos con estas medidas:
+    <ul>
+      <li><strong>Matriz de confusión.</strong></li>
+      <li><strong>Exactitud</strong> (<em>accuracy</em>): aciertos sobre el total.</li>
+      <li><strong>Precisión</strong> (<em>precision</em>): de los que el modelo dice «Bueno», cuántos lo son.</li>
+      <li><strong>Sensibilidad</strong> (<em>recall</em>): de los «Bueno» reales, cuántos detecta.</li>
+    </ul>
+  </li>
+  <li><em>Atención:</em> en español «precisión» se usa a veces para la exactitud. Aclare a cuál se refiere y verifique a cuál se refiere la IA.</li>
+  <li>Compare todo contra la <strong>línea de base</strong>: ¿cuánto acierta un modelo que diga siempre «Malo»? ¿Sus modelos la superan, y en qué métrica?</li>
+</ul>
+
+<h5>3. Decisión</h5>
+<p>La bodega quiere <strong>detectar lotes defectuosos</strong> antes de embotellar.</p>
+<ul>
+  <li>¿Cuál es la clase que se quiere detectar? (En el Clasificador puede elegir «Malo» como clase positiva.)</li>
+  <li>¿Qué error le preocupa más: un <strong>falso positivo</strong> o un <strong>falso negativo</strong>? ¿Por qué, en términos de costo para la bodega?</li>
+  <li>¿Qué modelo elegiría y <strong>con qué umbral</strong>? Use el umbral de decisión para mostrar cómo cambia el balance entre los dos errores, y justifique su elección con números de la matriz de confusión.</li>
+</ul>
+
+<h5>4. Un vino nuevo</h5>
+<p>Llegó del laboratorio este vino <strong>tinto</strong>:</p>
+<table style="border-collapse:collapse;margin:0 0 12px 0">
+  <thead>
+    <tr><th style="border:1px solid #999;padding:4px 10px;text-align:left">Variable</th><th style="border:1px solid #999;padding:4px 10px;text-align:right">Valor</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Acidez fija</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">7,2 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Acidez volátil</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">0,32 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Ácido cítrico</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">0,34 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Azúcar residual</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">2,1 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Cloruros</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">0,062 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">SO₂ libre</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">16 mg/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">SO₂ total</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">45 mg/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Densidad</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">0,9952 g/cm³</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">pH</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">3,30</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Sulfatos</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">0,70 g/L</td></tr>
+    <tr><td style="border:1px solid #999;padding:4px 10px">Alcohol</td><td style="border:1px solid #999;padding:4px 10px;text-align:right">11,6 % vol</td></tr>
+  </tbody>
+</table>
+<ol>
+  <li>Pídale la clasificación a la IA.</li>
+  <li>Cárguelo en el paso 4 del Clasificador con cada uno de sus modelos.</li>
+  <li>Informe la <strong>probabilidad</strong> y la <strong>clase</strong> que da cada uno.</li>
+</ol>
+<p>¿Coinciden? Si no coinciden, ¿por qué podría ser? ¿Qué le diría a la bodega sobre este vino?</p>
+
+<h5>5. Auditoría</h5>
+<ul>
+  <li>Una <strong>afirmación de la IA que comprobó</strong>: qué dijo, cómo lo verificó y qué encontró.</li>
+  <li>Una <strong>afirmación de la IA que corrigió</strong>: qué dijo, qué era lo correcto y cómo lo supo.</li>
+</ul>
+
+<h4>Entrega</h4>
+<ul>
+  <li><strong>Informe breve</strong> (una a dos páginas) con las respuestas a las cinco consignas. Incluya:
+    <ul>
+      <li>al menos una matriz de confusión (en el Clasificador: «Descargar resultado (PNG)»);</li>
+      <li>la tabla comparativa de modelos («Descargar tabla (CSV)»).</li>
+    </ul>
+  </li>
+  <li><strong>Anexo:</strong> el registro de la conversación con la IA (texto exportado o capturas). Si usó el Data Lab, puede adjuntar el archivo de «Guardar análisis» (.datalab.json): reabre sus modelos tal como los dejó.</li>
+</ul>
+
+<h4>Cómo se califica (todas las tareas)</h4>
+<p>Se evalúa la <strong>dirección y auditoría del trabajo realizado con IA</strong>:</p>
+<ul>
+  <li>claridad del problema planteado;</li>
+  <li>pertinencia de las consignas dadas a la IA;</li>
+  <li>verificación independiente de los resultados;</li>
+  <li>fundamentación de la decisión.</li>
+</ul>
