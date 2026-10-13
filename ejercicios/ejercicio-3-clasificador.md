@@ -13,7 +13,7 @@ Su tarea: construir un modelo que clasifique cada vino como bueno o malo, evalua
 Use **las dos**:
 
 1. **Una IA con análisis de datos** (ChatGPT, Claude, Gemini u otra que pueda leer un archivo y ejecutar código). Es obligatoria: el anexo con la conversación es parte de la entrega.
-2. **El Clasificador del Data Lab**: https://ucema-datalab.vercel.app → dataset **Vinos** → botón **Clasificador ◆** (o las preguntas guiadas 9 y 10). Corre en su navegador, sin programar: muestra la exploración de los datos, entrena tres modelos (regresión logística, árbol de decisión y k vecinos), arma la matriz de confusión, permite mover el umbral de decisión y predecir un vino nuevo.
+2. **El Clasificador del Data Lab**: https://ucema-datalab.vercel.app → dataset **Vinos** → botón **Clasificador ◆** (o las preguntas guiadas 9, 10 y 11; la 11 entrena los tres modelos con la misma configuración y carga el vino del punto 4). Corre en su navegador, sin programar: muestra la exploración de los datos, entrena tres modelos (regresión logística, árbol de decisión y k vecinos), arma la matriz de confusión, permite mover el umbral de decisión y predecir un vino nuevo.
 
 El Data Lab es su **verificación independiente**: calcula las mismas cifras que le dará la IA, con un método que usted controla. Puede trabajar en el orden que prefiera: pedirle el análisis a la IA y contrastarlo con el Data Lab, o hacer los modelos en el Data Lab y pedirle a la IA que los replique, los explique o los critique. Lo que cuenta es que cada cifra importante del informe esté verificada por una segunda vía.
 

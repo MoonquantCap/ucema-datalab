@@ -1189,7 +1189,18 @@ function clfShow(preset,q){if(!D)return;imp.hidden=true;clfBox.hidden=false;$("#
   if(!C.none)clfApply(preset);
   const fq=$("#clf-q");if(q&&q.f){fq.hidden=false;fq.innerHTML=`<h3>Pregunta guiada · ${esc(q.t)}</h3>${q.f}`;}else fq.hidden=true;
   clfRender();clfBox.scrollTop=0;
-  if(preset&&preset.train&&!C.none&&!C.runs.length)clfDoTrain();}
+  if(preset&&preset.train&&!C.none&&!C.runs.length)clfDoTrain();
+  if(preset&&preset.solve===3&&!C.none)solveEx3();}
+/* Ejercicio 3 paso a paso: los tres modelos con la misma configuración y el vino del punto 4 */
+async function solveEx3(){if(!ex3Fits()||!col("Calidad"))return;
+  setTarget("Calidad","Bueno");C.feats=clfCands().map(c=>c.k);Object.assign(C,{dedupe:true,test:30,seed:42,cutoff:.5,depth:4,leaf:20,k:15});
+  clfRender();status("Entrenando los tres modelos…");await new Promise(r=>setTimeout(r,30));
+  try{const first=C.runs.length;
+    for(const m of ["logit","tree","knn"]){C.model=m;C.runs.push(clfTrain(curCfg()));if(C.runs.length>RUNS_MAX)C.runs.shift();}
+    C.cur=Math.max(0,C.runs.length-3);C.model="logit";loadEx3();
+    status("Listo: regresión logística, árbol de decisión y k vecinos, con las mismas variables, división y semilla.");
+    renderModelCtl();renderResults();renderPredict();$("#cs4").scrollIntoView({behavior:"smooth",block:"start"});}
+  catch(e){console.error(e);status("No se pudo entrenar: "+e.message);}}
 function clfHide(){clfBox.hidden=true;$("#btn-clf").setAttribute("aria-pressed","false");hideTip();}
 function clfOnDS(){if(!clfBox.hidden&&(!C||C.ds!==dsKey))clfShow();}
 $("#btn-clf").onclick=()=>clfBox.hidden?clfShow():clfHide();
@@ -1253,7 +1264,7 @@ function renderModelCtl(){const box=$("#c-models");
 function status(t){$("#c-status").textContent=t;}
 async function clfDoTrain(){const cfg=curCfg();if(!cfg.feats.length){status("Elija al menos una variable en el paso 2.");return;}
   const b=$("#c-train");b.disabled=true;status("Entrenando…");await new Promise(r=>setTimeout(r,30));
-  try{const run=clfTrain(cfg);C.runs.push(run);if(C.runs.length>RUNS_MAX)C.runs.shift();C.cur=C.runs.length-1;C.inp=null;
+  try{const run=clfTrain(cfg);C.runs.push(run);if(C.runs.length>RUNS_MAX)C.runs.shift();C.cur=C.runs.length-1;
     status(`Listo: ${MODELS[cfg.model]} entrenado en ${nf(run.ms,0)} ms.`);renderResults();renderPredict();}
   catch(e){console.error(e);status("No se pudo entrenar: "+e.message);}
   b.disabled=false;}
@@ -1329,7 +1340,7 @@ function renderCmp(){const box=$("#c-cmp");
   C.runs.forEach((r,i)=>{const c=r.cfg,m=mets(r.pt,r.yt,c.cutoff),mt=mets(r.pr,r.yr,c.cutoff);
     h+=`<tr data-i="${i}" class="${i===C.cur?"cur":""}"><td>${i+1}</td><td>${MODELS[c.model]}<small>${esc(c.target)} = ${qq(c.pos)}</small></td><td>${paramsTxt(c)}</td><td class="num" title="${esc(c.feats.join(", "))}">${c.feats.length}</td><td>${c.dedupe?"quitados":"incluidos"}</td><td class="num">${c.test}%</td><td class="num">${c.seed}</td><td class="num">${nf(c.cutoff,2)}</td><td class="num">${pc(m.acc)}</td><td class="num">${pc(m.prec)}</td><td class="num">${pc(m.rec)}</td><td class="num">${Number.isFinite(m.f1)?nf(m.f1,2):"—"}</td><td class="num">${Number.isFinite(r.auc)?nf(r.auc,2):"—"}</td><td class="num">${pc(mt.acc)}</td></tr>`;});
   box.innerHTML=h+`</tbody></table>`;
-  $$("tr[data-i]",box).forEach(tr=>tr.onclick=()=>{C.cur=+tr.dataset.i;C.inp=null;renderResults();renderPredict();});}
+  $$("tr[data-i]",box).forEach(tr=>tr.onclick=()=>{C.cur=+tr.dataset.i;renderResults();renderPredict();});}
 $("#c-clear").onclick=()=>{C.runs=[];C.cur=-1;C.inp=null;status("");renderResults();renderPredict();};
 $("#c-csv").onclick=()=>{if(!C.runs.length)return;const rows=[["#","Modelo","Variable a predecir","Clase positiva","Parámetros","Cantidad de variables","Duplicados","Prueba","Semilla","Umbral","VP","FN","FP","VN","Exactitud","Precisión","Sensibilidad","F1","AUC","Exactitud entrenamiento","Variables"]];
   C.runs.forEach((r,i)=>{const c=r.cfg,m=mets(r.pt,r.yt,c.cutoff),mt=mets(r.pr,r.yr,c.cutoff);
@@ -1362,25 +1373,47 @@ $("#c-png").onclick=()=>{const run=curRun();if(!run)return;const c=run.cfg,P=run
 function typical(P){const v={};P.feats.forEach(c=>{if(c.t==="num"){const j=P.dc.findIndex(d=>d.src===c);v[c.k]=String(+P.med[j].toPrecision(4));}else v[c.k]=P.mode[c.k];});return v;}
 function renderPredict(){const run=curRun(),box=$("#c-inp"),btns=$("#c-pbtns");
   if(!run){$("#c-psub").innerHTML="Entrene un modelo en el paso 3 para poder predecir.";box.innerHTML="";btns.innerHTML="";$("#c-pout").innerHTML="";return;}
-  const P=run.P,c=run.cfg;if(!C.inp||C.inp.run!==run)C.inp={run,vals:typical(P),real:null};
+  const P=run.P,c=run.cfg;
+  /* el caso se conserva al cambiar de modelo: sólo se completan las variables que falten */
+  if(!C.inp)C.inp={vals:{},real:null,target:c.target};
+  if(C.inp.target!==c.target){C.inp.real=null;C.inp.target=c.target;}
+  const ty=typical(P);P.feats.forEach(f=>{if(!(f.k in C.inp.vals))C.inp.vals[f.k]=ty[f.k];});
   $("#c-psub").innerHTML=`Modelo actual: <b>${MODELS[c.model]}</b> (fila ${C.cur+1} de la comparación), con ${c.feats.length} variables. Escriba los valores de un caso nuevo, o cargue un caso del conjunto de prueba para ver si el modelo acierta. Los campos vacíos se completan con la mediana del entrenamiento.`;
-  btns.innerHTML=`<button class="btn" type="button" data-e="typ">Valores típicos (medianas)</button><button class="btn" type="button" data-e="1">Un caso de prueba ${qq(c.pos)}</button><button class="btn" type="button" data-e="0">Un caso de prueba ${qq(P.neg)}</button>`;
+  btns.innerHTML=`<button class="btn" type="button" data-e="typ">Valores típicos (medianas)</button><button class="btn" type="button" data-e="1">Un caso de prueba ${qq(c.pos)}</button><button class="btn" type="button" data-e="0">Un caso de prueba ${qq(P.neg)}</button>`+(ex3Fits()?`<button class="btn" type="button" data-e="ex3" style="border-color:var(--gold);color:var(--gold)">Vino del ejercicio 3</button>`:"");
   $$("button",btns).forEach(b=>b.onclick=()=>{if(b.dataset.e==="typ"){C.inp.vals=typical(P);C.inp.real=null;}
+    else if(b.dataset.e==="ex3"){loadEx3();}
     else{const want=+b.dataset.e,pool=run.te.filter(li=>P.y[li]===want);if(!pool.length)return;const li=pool[Math.floor(Math.random()*pool.length)],i=P.rows[li];
       P.feats.forEach(f=>{C.inp.vals[f.k]=f.t==="num"?(Number.isFinite(f.v[i])?String(f.v[i]):""):f.v[i];});C.inp.real=want?c.pos:P.neg;C.inp.row=i;}
+    if(b.dataset.e!=="ex3")C.inp.ex3=false;
     fillInputs(run);predictOut();});
   box.innerHTML=P.feats.map(f=>`<label><span>${esc(label(f))}</span>${f.t==="num"?`<input type="number" step="any" data-k="${esc(f.k)}">`:`<select data-k="${esc(f.k)}">${f.levels.map((l,i)=>`<option value="${i}">${esc(l)}</option>`).join("")}</select>`}</label>`).join("");
-  $$("input,select",box).forEach(i=>i.oninput=()=>{const f=col(i.dataset.k);C.inp.vals[f.k]=f.t==="num"?i.value:+i.value;C.inp.real=null;predictOut();});
+  $$("input,select",box).forEach(i=>i.oninput=()=>{const f=col(i.dataset.k);C.inp.vals[f.k]=f.t==="num"?i.value:+i.value;C.inp.real=null;C.inp.ex3=false;predictOut();});
   fillInputs(run);predictOut();}
+/* el vino del ejercicio 3 (punto 4: «Un vino nuevo») */
+const EX3={"Acidez fija":7.2,"Acidez volátil":0.32,"Ácido cítrico":0.34,"Azúcar residual":2.1,"Cloruros":0.062,"SO₂ libre":16,"SO₂ total":45,"Densidad":0.9952,"pH":3.30,"Sulfatos":0.70,"Alcohol":11.6,"Tipo":"Tinto"};
+function ex3Fits(){return Object.keys(EX3).every(k=>{const c=col(k);return c&&(c.t==="num"||c.levels.includes(EX3[k]));});}
+function loadEx3(){if(!C.inp)C.inp={vals:{},real:null,target:C.target};Object.entries(EX3).forEach(([k,v])=>{const c=col(k);C.inp.vals[k]=c.t==="num"?String(v):c.levels.indexOf(v);});C.inp.real=null;C.inp.ex3=true;}
+function caseVec(run,vals){const P=run.P,p=P.p,x=new Float64Array(p),z=new Float64Array(p);let filled=0;
+  P.dc.forEach((d,j)=>{const raw=vals[d.src.k];
+    if(d.kind==="num"){let v=parseFloat(String(raw==null?"":raw).replace(",","."));if(!Number.isFinite(v)){v=P.med[j];filled++;}x[j]=v;}
+    else{const li=raw==null||raw===""?P.mode[d.src.k]:+raw;x[j]=li===d.li?1:0;}
+    z[j]=(x[j]-P.mu[j])/P.sd[j];});
+  return{x,z,filled};}
+function caseProb(run,v,path){const M=run.M;return M.type==="logit"?pLogit(M,v.z):M.type==="tree"?pTree(M,v.x,path):knnFind(M,run.P,v.z).p;}
+function allModelsHTML(){if(C.runs.length<2)return "";
+  return `<h4 class="ch" style="margin:18px 0 8px">Este caso según cada modelo de la comparación</h4><div class="ctab"><table><thead><tr><th>#</th><th>Modelo</th><th>Parámetros</th><th class="num">Variables</th><th class="num">Probabilidad de la clase positiva</th><th class="num">Umbral</th><th>Decisión</th></tr></thead><tbody>`+
+    C.runs.map((r,i)=>{const c=r.cfg,v=caseVec(r,C.inp.vals),pr=caseProb(r,v),isP=pr>=c.cutoff-1e-12;
+      return `<tr class="${i===C.cur?"cur":""}"><td>${i+1}</td><td>${MODELS[c.model]}</td><td>${paramsTxt(c)}</td><td class="num">${c.feats.length}</td><td class="num">${pc(pr)} <small style="color:var(--muted)">${qq(c.pos)}</small></td><td class="num">${nf(c.cutoff,2)}</td><td><span class="dec ${isP?"pos":"neg"}" style="font-size:13px;padding:2px 10px">${esc(isP?c.pos:r.P.neg)}</span></td></tr>`;}).join("")+
+    `</tbody></table></div><p class="sub" style="margin-top:8px">Mismo caso, distintos modelos: si no coinciden, compare cómo decide cada uno (pesos, reglas o vecinos) y qué tan cerca del umbral está cada probabilidad.</p>`;}
 function fillInputs(run){$$("#c-inp [data-k]").forEach(i=>{const v=C.inp.vals[i.dataset.k];i.value=v==null?"":String(v);});}
 function predictOut(){const run=curRun(),out=$("#c-pout");if(!run||!C.inp){out.innerHTML="";return;}
-  const P=run.P,M=run.M,c=run.cfg,p=P.p,x=new Float64Array(p),z=new Float64Array(p);let filled=0;
-  P.dc.forEach((d,j)=>{const raw=C.inp.vals[d.src.k];if(d.kind==="num"){let v=parseFloat(String(raw).replace(",","."));if(!Number.isFinite(v)){v=P.med[j];filled++;}x[j]=v;}else x[j]=+raw===d.li?1:0;z[j]=(x[j]-P.mu[j])/P.sd[j];});
-  const path=[],kn=M.type==="knn"?knnFind(M,P,z):null,pr=M.type==="logit"?pLogit(M,z):M.type==="tree"?pTree(M,x,path):kn.p;
+  const P=run.P,M=run.M,c=run.cfg,p=P.p,cv=caseVec(run,C.inp.vals),x=cv.x,z=cv.z,filled=cv.filled;
+  const path=[],kn=M.type==="knn"?knnFind(M,P,z):null,pr=kn?kn.p:caseProb(run,cv,path);
   const isP=pr>=c.cutoff-1e-12,cls=isP?c.pos:P.neg,pos=qq(c.pos),neg=qq(P.neg);
   let card=`<div class="pcard"><span class="l">Probabilidad estimada de ${pos}</span><div class="big-r">${pc(pr)}</div><div class="pmeter"><i style="width:${(pr*100).toFixed(1)}%"></i><b style="left:calc(${(c.cutoff*100).toFixed(1)}% - 1px)"></b></div>`+
     `<span class="l">Con umbral ${nf(c.cutoff,2)} el modelo dice:</span><span class="dec ${isP?"pos":"neg"}">${esc(cls)}</span>`+
     (C.inp.real!=null?`<span class="l" style="margin-top:6px">Clase real de este caso de prueba: <b>${esc(C.inp.real)}</b> · ${C.inp.real===cls?"<b style='color:var(--accent)'>acierto</b>":"<b style='color:var(--hot)'>error</b>"}</span>`:"")+
+    (C.inp.ex3?`<span class="l" style="margin-top:6px">Caso cargado: <b>vino del ejercicio 3</b> (punto 4).</span>`:"")+
     (filled?`<span class="l">${filled} campo(s) vacío(s) completado(s) con la mediana.</span>`:"")+`</div>`;
   let ex="";
   if(M.type==="logit"){const items=P.dc.map((d,j)=>({name:d.kind==="dum"?`${d.src.k}: ${d.lv}`:d.name,v:M.w[j]*z[j]})).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)).slice(0,10);
@@ -1390,7 +1423,7 @@ function predictOut(){const run=curRun(),out=$("#c-pout");if(!run||!C.inp){out.i
   else{const show=Math.min(5,M.k),fs=P.dc.filter(d=>d.kind==="num").slice(0,4);let np=0;for(let q=0;q<M.k;q++)np+=P.y[kn.bi[q]];
     ex=`<p class="sub" style="margin-bottom:8px">De los <b>${M.k}</b> vecinos más parecidos, <b>${np}</b> son ${pos}: ${pc(np/M.k)}. Los ${show} más cercanos:</p><div class="ctab"><table><thead><tr><th>#</th><th class="num">Distancia</th><th>Clase</th>${fs.map(d=>`<th class="num">${esc(d.name)}</th>`).join("")}</tr></thead><tbody>`+
       Array.from({length:show},(_,q)=>{const li=kn.bi[q];return `<tr><td>${q+1}</td><td class="num">${nf(Math.sqrt(kn.bd[q]),2)}</td><td>${P.y[li]?esc(c.pos):esc(P.neg)}</td>${fs.map(d=>`<td class="num">${fmt(P.X[li*p+P.dc.indexOf(d)])}</td>`).join("")}</tr>`;}).join("")+`</tbody></table></div>`;}
-  out.innerHTML=`<div class="pout">${card}<div>${ex}</div></div>`;}
+  out.innerHTML=`<div class="pout">${card}<div>${ex}</div></div>`+allModelsHTML();}
 
 /* ---- guardar / restaurar ---- */
 function clfState(){if(!C||C.none||C.ds!==dsKey)return null;const {target,pos,feats,dedupe,test,seed,model,depth,leaf,k,cutoff}=C;
@@ -1406,13 +1439,17 @@ function clfRestore(st,open){clfInit();if(C.none||!st)return;
 addEventListener("resize",()=>{if(!clfBox.hidden){const r=curRun();if(r)drawThr(r);}});
 
 /* ---- preguntas guiadas del clasificador ---- */
-if(DATASETS.vinos&&!DATASETS.vinos.qs.some(q=>q.c==="clf"))DATASETS.vinos.qs.push(
+const CLF_QS=[
   {t:"¿Se puede predecir un buen vino?",s:"Clasificador · regresión logística y matriz de confusión",c:"clf",clf:{target:"Calidad",pos:"Bueno",model:"logit",train:true},
    f:"Sólo el <b>19,6%</b> de los vinos es «Bueno»: un modelo que diga siempre «Malo» acierta el <b>80,4%</b> sin aprender nada. Ésa es la línea de base que cualquier modelo tiene que superar. Mire la matriz de confusión, no sólo la exactitud: ¿cuántos vinos buenos detecta el modelo?",
    ta:"«¿Por qué la exactitud sola no alcanza para evaluar este modelo?»"},
   {t:"Tres modelos, una bodega",s:"Clasificador · comparar modelos y elegir el umbral",c:"clf",clf:{target:"Calidad",pos:"Bueno",model:"tree"},
    f:"Entrene la regresión logística, el árbol y k vecinos con las mismas variables y la misma semilla, y compárelos en la tabla. Después mueva el umbral: bajarlo detecta más vinos de la clase positiva a costa de más falsas alarmas. Si la bodega quiere detectar lotes defectuosos, ¿cuál debería ser la clase positiva?",
-   ta:"«Para una bodega que quiere detectar lotes defectuosos, ¿qué error es más caro: un falso positivo o un falso negativo?»"});
+   ta:"«Para una bodega que quiere detectar lotes defectuosos, ¿qué error es más caro: un falso positivo o un falso negativo?»"},
+  {t:"Resolver el ejercicio 3",s:"Clasificador · tres modelos y el vino del punto 4",c:"clf",clf:{target:"Calidad",pos:"Bueno",solve:3},
+   f:"Entrena con un clic la regresión logística, el árbol de decisión y k vecinos con la misma configuración (todas las variables, sin duplicados, 30% de prueba, semilla 42) y carga el vino del punto 4 del ejercicio. Compare las matrices de confusión en la tabla de modelos y vea, al final del paso 4, qué dice cada modelo sobre el vino nuevo. Los números los calcula el lab; la decisión y su justificación son suyas.",
+   ta:"«Los tres modelos no coinciden sobre este vino: ¿a cuál le creerías y por qué?»"}];
+if(DATASETS.vinos)CLF_QS.forEach(q=>{if(!DATASETS.vinos.qs.some(x=>x.t===q.t))DATASETS.vinos.qs.push(q);});
 
 Object.keys(DATASETS).forEach(addTab);
 loadDS(Object.keys(DATASETS)[0]);
