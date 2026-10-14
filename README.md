@@ -18,6 +18,8 @@ Explorador de datos de la materia **Data Science 101: Intro y Aplicaciones** (MB
   Los modelos están escritos a mano en el mismo archivo, sin librerías. Funciona con los datasets de clase y con cualquier CSV que tenga una columna de 2 a 12 categorías.
 
 - **Regresión**: el mismo panel, con una variable numérica a predecir (por ejemplo, el precio). Tres modelos (regresión lineal, árbol de regresión y k vecinos), métricas RMSE, MAE y R² contra la línea de base de predecir el promedio, gráfico de valores predichos contra reales, explicación de cada modelo, comparación exportable y predicción de casos nuevos.
+- **Validación cruzada** (clasificación y regresión): entrena el modelo en 5 partes y muestra las métricas de entrenamiento y de prueba de cada una, con promedio y desvío, para detectar sobreajuste.
+- **Mapa con contornos**: países de Sudamérica, estados de Brasil y el municipio de São Paulo debajo de los puntos. «Vista: Datos» acerca la vista a la mayoría de los puntos; «Vista: Brasil» muestra todos, incluidas las coordenadas fuera de lugar.
 - **Filas**: filtro que analiza sólo una parte de los datos (por ejemplo, «Negotiation Type = rent»). Se aplica a todos los gráficos, la tabla y los modelos, y se guarda con el análisis.
 ## Ejercicios
 
@@ -45,3 +47,4 @@ Todo el código está en `index.html`, sin minificar: se puede leer, modificar y
 
 - Cortez, P., Cerdeira, A., Almeida, F., Matos, T. y Reis, J. (2009). *Modeling wine preferences by data mining from physicochemical properties*. Decision Support Systems. UCI Machine Learning Repository.
 - Departamentos de São Paulo, abril de 2019: archivo `sao-paulo-properties-april-2019.csv` del campus de la materia (13.640 publicaciones de venta y alquiler).
+- Contornos del mapa: Natural Earth (dominio público), países y estados de Brasil; límite del municipio de São Paulo: IBGE (malhas territoriales). Simplificados e incluidos en el archivo.
