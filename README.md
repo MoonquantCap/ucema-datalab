@@ -6,7 +6,7 @@ Explorador de datos de la materia **Data Science 101: Intro y Aplicaciones** (MB
 
 ## Qué hace
 
-- Trae dos datasets de clase con preguntas guiadas: Wine Quality (vinho verde, UCI) y departamentos de São Paulo (abril de 2019: precio, expensas, superficie, ambientes, barrio, venta o alquiler y ubicación), cargado tal como viene, sin limpiar.
+- Trae tres datasets de clase con preguntas guiadas: Wine Quality (vinho verde, UCI), departamentos de São Paulo (abril de 2019: precio, expensas, superficie, ambientes, barrio, venta o alquiler y ubicación) y Mall Customers (200 clientes: género, edad, ingreso anual y puntaje de gasto). Se cargan tal como vienen, sin limpiar.
 - Permite cargar cualquier archivo CSV propio. Detecta separador, formato de números (1234.5 o 1.234,5), fechas y tipos de variable, y arma preguntas y hallazgos automáticos.
 - Gráficos: tabla y estadística descriptiva, histograma, dispersión con recta de regresión, box plot, barras con agregación, línea (series de tiempo), mapa de calor, matriz de correlación y mapa (si hay latitud y longitud).
 - **Clasificador**: entrena un modelo que predice una variable categórica (por ejemplo, la calidad del vino, «Bueno» o «Malo») a partir de las demás. Tiene cuatro pasos:
@@ -18,6 +18,7 @@ Explorador de datos de la materia **Data Science 101: Intro y Aplicaciones** (MB
   Los modelos están escritos a mano en el mismo archivo, sin librerías. Funciona con los datasets de clase y con cualquier CSV que tenga una columna de 2 a 12 categorías.
 
 - **Regresión**: el mismo panel, con una variable numérica a predecir (por ejemplo, el precio). Tres modelos (regresión lineal, árbol de regresión y k vecinos), métricas RMSE, MAE y R² contra la línea de base de predecir el promedio, gráfico de valores predichos contra reales, explicación de cada modelo, comparación exportable y predicción de casos nuevos.
+- **Clustering**: agrupa los casos en segmentos con k-means, k-medoids o jerárquico (Ward). Elección de variables, estandarización, gráfico del codo y silueta para k = 2 a 10, mapa de los grupos en dos componentes principales, perfiles de cada grupo (promedios y categorías), comparación entre métodos (índice de Rand ajustado), descarga de las filas con su grupo y asignación de casos nuevos.
 - **Validación cruzada** (clasificación y regresión): entrena el modelo en 5 partes y muestra las métricas de entrenamiento y de prueba de cada una, con promedio y desvío, para detectar sobreajuste.
 - **Mapa con contornos**: países de Sudamérica, estados de Brasil y el municipio de São Paulo debajo de los puntos. «Vista: Datos» acerca la vista a la mayoría de los puntos; «Vista: Brasil» muestra todos, incluidas las coordenadas fuera de lugar.
 - **Filas**: filtro que analiza sólo una parte de los datos (por ejemplo, «Negotiation Type = rent»). Se aplica a todos los gráficos, la tabla y los modelos, y se guarda con el análisis.
@@ -47,4 +48,5 @@ Todo el código está en `index.html`, sin minificar: se puede leer, modificar y
 
 - Cortez, P., Cerdeira, A., Almeida, F., Matos, T. y Reis, J. (2009). *Modeling wine preferences by data mining from physicochemical properties*. Decision Support Systems. UCI Machine Learning Repository.
 - Departamentos de São Paulo, abril de 2019: archivo `sao-paulo-properties-april-2019.csv` del campus de la materia (13.640 publicaciones de venta y alquiler).
+- Mall Customers: archivo `Mall_Customers.csv` del campus de la materia (200 clientes de un centro comercial).
 - Contornos del mapa: Natural Earth (dominio público), países y estados de Brasil; límite del municipio de São Paulo: IBGE (malhas territoriales). Simplificados e incluidos en el archivo.
